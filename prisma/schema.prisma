@@ -1,0 +1,80 @@
+// BillNotify Nepal - Prisma Schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum UtilityType {
+  ELECTRICITY
+  WATER
+}
+
+model UserProfile {
+  id           String           @id @default(cuid())
+  clerkId      String           @unique
+  email        String           @unique
+  name         String?
+  plan         Plan             @default(FREE)
+  emailEnabled Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  accounts     UtilityAccount[]
+  notifications NotificationLog[]
+}
+
+model UtilityAccount {
+  id              String           @id @default(cuid())
+  userId          String
+  user            UserProfile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  utilityType     UtilityType      @default(ELECTRICITY)
+  providerName    String           @default("NEA")
+  customerName    String?
+  neaLocationCode String
+  scNo            String
+  consumerId      String
+  emailOverride   String?
+  active          Boolean          @default(true)
+  lastStatus      String?
+  lastAmount      Float?
+  lastBillMonth   String?
+  lastCheckedAt   DateTime?
+  lastNotifiedAt  DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  notifications   NotificationLog[]
+
+  @@unique([userId, neaLocationCode, scNo, consumerId])
+}
+
+model NotificationLog {
+  id        String         @id @default(cuid())
+  userId    String
+  user      UserProfile    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId String
+  account   UtilityAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  email     String
+  amount    Float
+  billMonth String
+  status    String
+  sentAt    DateTime       @default(now())
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  plan      Plan     @default(FREE)
+  startedAt DateTime @default(now())
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
