@@ -65,15 +65,15 @@ export function BillReadyEmail({
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: '#6b7280', fontSize: '13px' }}>Consumer ID</span>
+              <span style={{ color: '#6b7280', fontSize: '13px' }}>Consumer ID: </span>
               <span style={{ color: '#111827', fontWeight: 600, fontSize: '14px' }}>{consumerId}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: '#6b7280', fontSize: '13px' }}>Bill Month</span>
+              <span style={{ color: '#6b7280', fontSize: '13px' }}>Bill Month: </span>
               <span style={{ color: '#111827', fontWeight: 600, fontSize: '14px' }}>{billMonth}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: '#6b7280', fontSize: '13px' }}>Status</span>
+              <span style={{ color: '#6b7280', fontSize: '13px' }}>Status: </span>
               <span
                 style={{
                   backgroundColor: '#dcfce7',

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { X, Zap, Droplets, Loader2 } from 'lucide-react'
 import { FREE_ACCOUNT_LIMIT } from '@/lib/utils'
+import { neaLocations } from '@/lib/data/neo-locations'
 
 interface AddAccountModalProps {
   isOpen: boolean
@@ -124,7 +125,7 @@ export function AddAccountModal({
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-box " onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div
           style={{
@@ -195,14 +196,21 @@ export function AddAccountModal({
             <label className="form-label" htmlFor="nea-location-code">
               NEA Location Code
             </label>
-            <input
+            <select
               id="nea-location-code"
               className="form-input"
-              type="text"
-              placeholder="e.g. 10, 211, 40"
               value={formData.neaLocationCode}
               onChange={(e) => setFormData((f) => ({ ...f, neaLocationCode: e.target.value }))}
-            />
+            >
+
+              {
+                neaLocations.map((location) => (
+                  <option key={location.value} value={location.value} >
+                    {location.label}
+                  </option>
+                ))
+              }
+            </select>
             {errors.neaLocationCode && <p className="form-error">{errors.neaLocationCode}</p>}
             <p style={{ fontSize: '0.72rem', color: 'var(--text-xmuted)', marginTop: '0.3rem' }}>
               Found on your electricity bill (District/Service Center code)
