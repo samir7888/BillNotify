@@ -106,7 +106,7 @@ export function AddAccountModal({
               Upgrade to Pro
             </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>
-              You've reached the <strong>{FREE_ACCOUNT_LIMIT()} account</strong> limit on the Free plan.
+              You&apos;ve reached the <strong>{FREE_ACCOUNT_LIMIT()} account</strong> limit on the Free plan.
               Upgrade to Pro for unlimited accounts and priority 2-hour checks.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
@@ -138,7 +138,7 @@ export function AddAccountModal({
           <div>
             <h2 className="heading-md">Add Utility Account</h2>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '0.25rem 0 0' }}>
-              We'll verify and auto-fill your customer name from NEA.
+              We&apos;ll verify and auto-fill your customer name from NEA.
             </p>
           </div>
           <button
@@ -277,7 +277,7 @@ export function AddAccountModal({
               lineHeight: 1.5,
             }}
           >
-            ℹ️ We'll instantly verify your details with NEA and auto-fill your customer name.
+            ℹ️ We&apos;ll instantly verify your details with NEA and auto-fill your customer name.
             If NEA cannot find the account, an error will be shown.
           </div>
 

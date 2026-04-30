@@ -400,3 +400,438 @@ table.data-table tbody tr:hover { background: var(--bg); }
 }
 .toggle input:checked + .toggle-slider { background: var(--primary); }
 .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+/* ── RESPONSIVE MOBILE-FIRST DESIGN ──────────────────── */
+
+/* Mobile: Default styles for small screens */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-w: 0;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  .mobile-close-btn {
+    display: block !important;
+  }
+
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 16rem;
+    height: 100vh;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 12px rgb(0 0 0 / 0.15);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 0.5);
+    z-index: 40;
+  }
+
+  .sidebar-backdrop.mobile-open {
+    display: block;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}
+
+/* Tablet: 768px and up */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+
+  .heading-lg {
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+  }
+
+  .heading-md {
+    font-size: 1.1rem;
+  }
+
+  .container-page {
+    padding: 0 1rem;
+  }
+
+  /* Stats cards - 2 columns on tablet */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Dashboard header - stack on tablet */
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .dashboard-header > div:last-child {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem !important;
+  }
+
+  .dashboard-header .btn,
+  .dashboard-header .badge {
+    width: 100%;
+  }
+
+  /* Table responsive */
+  table.data-table {
+    font-size: 0.75rem;
+  }
+
+  table.data-table th,
+  table.data-table td {
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* Hide less important columns on tablet */
+  table.data-table th:nth-child(6),
+  table.data-table td:nth-child(6) {
+    display: none;
+  }
+
+  /* Modal adjustments */
+  .modal-box {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  /* Pricing cards - stack on tablet */
+  .pricing-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Comparison table - start converting on tablet */
+  .comparison-table-wrap {
+    overflow-x: auto;
+  }
+}
+
+/* Mobile: Small phones (max 480px) */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 0.75rem;
+  }
+
+  .heading-xl {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .heading-lg {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .heading-md {
+    font-size: 1rem;
+  }
+
+  .heading-sm {
+    font-size: 0.95rem;
+  }
+
+  /* Stats cards - 1 column on mobile */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  /* Dashboard header - full stack on mobile */
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .dashboard-header > div:first-child {
+    width: 100%;
+  }
+
+  .dashboard-header > div:last-child {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem !important;
+  }
+
+  .dashboard-header .btn,
+  .dashboard-header .badge {
+    width: 100%;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-sm {
+    padding: 0.35rem 0.7rem;
+  }
+
+  /* Table to card layout on mobile */
+  .table-wrap {
+    border: none;
+    overflow: visible;
+  }
+
+  table.data-table {
+    width: 100%;
+    display: block;
+  }
+
+  table.data-table thead {
+    display: none;
+  }
+
+  table.data-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  table.data-table tr {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    overflow: hidden;
+  }
+
+  table.data-table tbody tr:hover {
+    background: var(--surface);
+  }
+
+  table.data-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  table.data-table td:last-child {
+    border-bottom: none;
+  }
+
+  table.data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    flex: 0 0 120px;
+  }
+
+  /* Actions on mobile - stack vertically */
+  table.data-table td:last-child {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  table.data-table td:last-child > div {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.4rem !important;
+  }
+
+  table.data-table td:last-child button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Comparison table on mobile - convert to cards */
+  .comparison-table {
+    display: block;
+  }
+
+  .comparison-table thead {
+    display: none;
+  }
+
+  .comparison-table tbody {
+    display: block;
+  }
+
+  .comparison-table tr {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.75rem;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .comparison-table tr:first-child {
+    display: flex;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  .comparison-table td {
+    display: block;
+    padding: 0.75rem;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .comparison-table td:first-child {
+    background: var(--bg);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  .comparison-table td::before {
+    content: attr(data-plan);
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Pricing cards responsive */
+  .pricing-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pricing-card-header {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+  }
+
+  /* Form inputs on mobile */
+  .form-input,
+  .form-select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Modal adjustments for mobile */
+  .modal-backdrop {
+    padding: 0.5rem;
+  }
+
+  .modal-box {
+    max-width: 100%;
+    border-radius: 1rem;
+    max-height: calc(100vh - 1rem);
+  }
+
+  /* Utilities section on mobile */
+  .accounts-section {
+    padding: 0 !important;
+  }
+
+  .accounts-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .accounts-header .badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Pricing page specific */
+  .pricing-header {
+    padding: 2rem 0 !important;
+  }
+
+  .pricing-header h1 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .pricing-header p {
+    font-size: 0.85rem;
+  }
+
+  /* FAQ cards */
+  .faq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .faq-card {
+    padding: 1rem !important;
+  }
+
+  .faq-card h3 {
+    font-size: 0.85rem !important;
+  }
+
+  .faq-card p {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Extra small devices (max 375px) */
+@media (max-width: 375px) {
+  .heading-lg {
+    font-size: 1rem;
+  }
+
+  .btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .main-content {
+    padding: 1rem 0.75rem;
+  }
+
+  .heading-lg {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+  }
+}

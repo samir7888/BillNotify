@@ -100,6 +100,7 @@ export default function DashboardPage() {
     <div className="animate-fade-in">
       {/* ── Page Header ──────────────────────────────────── */}
       <div
+        className="dashboard-header"
         style={{
           display: 'flex',
           alignItems: 'flex-start',
@@ -151,6 +152,7 @@ export default function DashboardPage() {
       {/* ── Stats Cards ───────────────────────────────────── */}
       {loading ? (
         <div
+          className="stats-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -170,8 +172,9 @@ export default function DashboardPage() {
       )}
 
       {/* ── Accounts Section ─────────────────────────────── */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+      <div className="card accounts-section" style={{ padding: 0, overflow: 'hidden' }}>
         <div
+          className="accounts-header"
           style={{
             display: 'flex',
             alignItems: 'center',

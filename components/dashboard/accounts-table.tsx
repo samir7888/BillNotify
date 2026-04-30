@@ -115,15 +115,15 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
             return (
               <tr key={account.id}>
                 {/* Customer Name */}
-                <td>
+                <td data-label="Customer">
                   <div style={{ fontWeight: 600, color: 'var(--text)' }}>
                     {account.customerName ?? '—'}
                   </div>
-                  
+
                 </td>
 
                 {/* Utility Type */}
-                <td>
+                <td data-label="Type">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     {account.utilityType === 'ELECTRICITY' ? (
                       <Zap size={14} color="var(--warning)" />
@@ -137,7 +137,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
                 </td>
 
                 {/* Consumer ID */}
-                <td>
+                <td data-label="Consumer ID">
                   <code
                     style={{
                       background: 'var(--bg)',
@@ -154,7 +154,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
                 </td>
 
                 {/* Status */}
-                <td>
+                <td data-label="Status">
                   {account.lastStatus ? (
                     <span
                       className={`badge badge-${statusColor}`}
@@ -170,7 +170,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
                 </td>
 
                 {/* Amount */}
-                <td>
+                <td data-label="Amount">
                   <span
                     style={{
                       fontWeight: 700,
@@ -185,12 +185,12 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
                 </td>
 
                 {/* Last Checked */}
-                <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                <td data-label="Last Checked" style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                   {formatRelativeTime(account.lastCheckedAt)}
                 </td>
 
                 {/* Actions */}
-                <td style={{ textAlign: 'right' }}>
+                <td data-label="Actions" style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
                     <button
                       className="btn btn-ghost btn-sm"

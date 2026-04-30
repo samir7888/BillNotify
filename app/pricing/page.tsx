@@ -59,7 +59,7 @@ export default function PricingPage() {
 
       <div className="container-page" style={{ padding: '5rem 1.5rem' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        <div className="pricing-header" style={{ textAlign: 'center', marginBottom: '4rem', padding: '0' }}>
           <div
             style={{
               display: 'inline-flex',
@@ -88,6 +88,7 @@ export default function PricingPage() {
 
         {/* Pricing cards */}
         <div
+          className="pricing-cards-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -191,7 +192,7 @@ export default function PricingPage() {
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.5rem' }}>
                 <span style={{ fontSize: '3rem', fontWeight: 800, color: '#f1f5f9' }}>
-                  NPR 299
+                  NPR 49
                 </span>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>/month</span>
               </div>
@@ -236,7 +237,7 @@ export default function PricingPage() {
         </div>
 
         {/* Feature comparison table */}
-        <div style={{ maxWidth: '700px', margin: '4rem auto 0' }}>
+        <div className="comparison-table-wrap hidden md:flex md:flex-col  " style={{ maxWidth: '700px', margin: '4rem auto 0' }}>
           <h2
             className="heading-md"
             style={{ textAlign: 'center', marginBottom: '2rem' }}
@@ -244,7 +245,7 @@ export default function PricingPage() {
             Plan Comparison
           </h2>
           <div className="table-wrap">
-            <table className="data-table">
+            <table className="data-table comparison-table">
               <thead>
                 <tr>
                   <th>Feature</th>
@@ -264,8 +265,8 @@ export default function PricingPage() {
                   { feature: 'Priority Support', free: '—', pro: '✓' },
                 ].map(({ feature, free, pro }) => (
                   <tr key={feature}>
-                    <td style={{ fontWeight: 500 }}>{feature}</td>
-                    <td style={{ textAlign: 'center', color: free === '—' ? 'var(--text-xmuted)' : 'var(--text)' }}>
+                    <td style={{ fontWeight: 500 }} data-plan="Feature">{feature}</td>
+                    <td style={{ textAlign: 'center', color: free === '—' ? 'var(--text-xmuted)' : 'var(--text)' }} data-plan="Free">
                       {free}
                     </td>
                     <td
@@ -274,6 +275,7 @@ export default function PricingPage() {
                         color: pro === '—' ? 'var(--text-xmuted)' : 'var(--primary)',
                         fontWeight: pro !== '—' ? 600 : 400,
                       }}
+                      data-plan="Pro"
                     >
                       {pro}
                     </td>
@@ -289,7 +291,7 @@ export default function PricingPage() {
           <h2 className="heading-md" style={{ textAlign: 'center', marginBottom: '2rem' }}>
             Frequently Asked Questions
           </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="faq-container" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {[
               {
                 q: 'How does the bill check work?',
@@ -310,7 +312,7 @@ export default function PricingPage() {
             ].map(({ q, a }) => (
               <div
                 key={q}
-                className="card"
+                className="card faq-card"
                 style={{ padding: '1.25rem' }}
               >
                 <h3 style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text)' }}>

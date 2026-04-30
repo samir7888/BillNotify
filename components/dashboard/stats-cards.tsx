@@ -44,6 +44,7 @@ export function StatsCards({ totalAccounts, activeAlerts, billsReady, plan }: St
 
   return (
     <div
+      className="stats-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
