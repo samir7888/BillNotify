@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { checkNEABill } from '@/lib/providers/nea'
 import { sendBillReadyEmail } from '@/lib/email'
 import { shouldNotify } from '@/lib/utils'
+import { emailQueue } from '@/lib/workers/email-worker'
+
 
 export async function POST(
   req: NextRequest,
@@ -85,7 +87,18 @@ export async function POST(
         const emailTo = account.emailOverride ?? profile.email
 
         try {
-          await sendBillReadyEmail({
+          // await sendBillReadyEmail({
+          //   to: emailTo,
+          //   customerName: result.customerName ?? account.customerName ?? 'Customer',
+          //   consumerId: account.consumerId,
+          //   amount: result.payableAmount,
+          //   billMonth: newBillMonth,
+          //   status: result.status ?? 'Ready to Pay',
+          //   providerName: account.providerName,
+          //   utilityType: account.utilityType,
+          // })
+
+          await emailQueue.add('send-email', {
             to: emailTo,
             customerName: result.customerName ?? account.customerName ?? 'Customer',
             consumerId: account.consumerId,
