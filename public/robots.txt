@@ -1,0 +1,49 @@
+# BillNotify Robots.txt
+# Allow all bots to crawl the website
+
+User-agent: *
+Allow: /
+Allow: /site-info.md
+Allow: /api/
+Allow: /dashboard
+Allow: /pricing
+Allow: /settings
+
+# Allow AI crawlers
+User-agent: GPTBot
+Allow: /
+Allow: /site-info.md
+
+User-agent: CCBot
+Allow: /
+Allow: /site-info.md
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /site-info.md
+
+User-agent: Claude-Web
+Allow: /
+Allow: /site-info.md
+
+User-agent: Googlebot
+Allow: /
+Allow: /site-info.md
+
+User-agent: Bingbot
+Allow: /
+Allow: /site-info.md
+
+User-agent: Slurp
+Allow: /
+Allow: /site-info.md
+
+# Disallow sensitive API endpoints
+Disallow: /api/accounts/*/private
+Disallow: /admin/
+
+# Crawl delay (optional - in seconds)
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://billnotify.com/sitemap.xml
