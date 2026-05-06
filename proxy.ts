@@ -33,18 +33,10 @@ const BOT_USER_AGENTS = [
 ];
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    await auth.protect();
-  }
-});
-
-
-
-export function middleware(request: NextRequest) {
-  const url = new URL(request.url);
+  const url = new URL(req.url);
   const pathname = url.pathname;
-  const acceptHeader = request.headers.get("accept") || "";
-  const userAgent = request.headers.get("user-agent") || "";
+  const acceptHeader = req.headers.get("accept") || "";
+  const userAgent = req.headers.get("user-agent") || "";
 
   // Check if request is from a bot
   const isBot = BOT_USER_AGENTS.some((bot) =>
@@ -97,13 +89,12 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
-}
+  // Protect dashboard and settings routes
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+});
 
 export const config = {
-  matcher: [
-    "/"
-    ,
-    "/site-info.md",
-  ],
+  matcher: ["/", "/site-info.md", "/dashboard(.*)", "/settings(.*)"],
 };
