@@ -6,7 +6,8 @@ import { FREE_ACCOUNT_LIMIT } from '@/lib/utils'
 
 // GET /api/accounts — list user's accounts
 export async function GET() {
-  const { userId } = await auth()
+  const { userId } = await auth();
+  console.log('userid', userId)
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const profile = await prisma.userProfile.findUnique({
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Get or create profile
-  let profile = await prisma.userProfile.findUnique({ where: { clerkId: userId } })
+  const profile = await prisma.userProfile.findUnique({ where: { clerkId: userId } })
   if (!profile) {
     return NextResponse.json({ error: 'User profile not found. Please reload.' }, { status: 404 })
   }

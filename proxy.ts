@@ -6,6 +6,9 @@ import { join } from "path";
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/settings(.*)",
+  "/api/accounts(.*)",
+  "/api/settings(.*)",
+  "/api/check-account(.*)",
 ]);
 // List of known bot user agents
 const BOT_USER_AGENTS = [
@@ -96,5 +99,13 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  matcher: ["/", "/site-info.md", "/dashboard(.*)", "/settings(.*)"],
+  matcher: [
+    "/",
+    "/site-info.md",
+    "/dashboard(.*)",
+    "/settings(.*)",
+    "/api/accounts(.*)",
+    "/api/settings(.*)",
+    "/api/check-account(.*)",
+  ],
 };
