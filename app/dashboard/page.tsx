@@ -11,6 +11,7 @@ interface Account {
   id: string
   customerName: string | null
   utilityType: string
+  scNo: string
   consumerId: string
   providerName: string
   lastStatus: string | null
@@ -84,7 +85,11 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
-    fetchAccounts()
+    // Defer fetching to avoid calling setState synchronously during render
+    const t = setTimeout(() => {
+      fetchAccounts()
+    }, 0)
+    return () => clearTimeout(t)
   }, [])
 
   const accounts = data?.accounts ?? []

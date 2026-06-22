@@ -10,7 +10,7 @@ interface Account {
   customerName: string | null
   utilityType: string
   consumerId: string
-  scNO: string
+  scNo: string
   providerName: string
   lastStatus: string | null
   lastAmount: number | null
