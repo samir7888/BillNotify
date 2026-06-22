@@ -10,6 +10,7 @@ interface Account {
   customerName: string | null
   utilityType: string
   consumerId: string
+  scNO: string
   providerName: string
   lastStatus: string | null
   lastAmount: number | null
@@ -33,6 +34,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
     try {
       const res = await fetch(`/api/check-account/${id}`, { method: 'POST' })
       const data = await res.json()
+      console.log(data,'data')
 
       if (!res.ok || !data.success) {
         toast.error(data.error ?? 'Check failed. Please try again.')
@@ -100,6 +102,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
             <th>Customer</th>
             <th>Type</th>
             <th>Consumer ID</th>
+            <th>SC NO</th>
             <th>Status</th>
             <th>Amount</th>
             <th>Last Checked</th>
@@ -150,6 +153,22 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
                     }}
                   >
                     {account.consumerId}
+                  </code>
+                </td>
+                {/* SC NO */}
+                <td data-label="SC NO">
+                  <code
+                    style={{
+                      background: 'var(--bg)',
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '0.8rem',
+                      fontFamily: 'monospace',
+                      color: 'var(--text)',
+                      border: '1px solid var(--border)',
+                    }}
+                  >
+                    {account.scNo}
                   </code>
                 </td>
 
