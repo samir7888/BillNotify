@@ -46,7 +46,7 @@ export async function sendBillReadyEmail(payload: BillEmailPayload) {
 
 export async function sendPaymentProofEmail(payload: PaymentProofEmailPayload) {
   const displayName = payload.userName ?? payload.userEmail
-  const adminUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://billnotify.com.np'}/admin`
+  const adminUrl = `${process.env.NEXT_PUBLIC_APP_URL}/admin`
 
   const { data, error } = await resend.emails.send({
     from: FROM_EMAIL,

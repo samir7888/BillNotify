@@ -9,9 +9,15 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 })
-
+const getAppUrl = () => {
+  const url = process.env.NEXT_PUBLIC_APP_URL;
+  if (!url || url.trim() === '') {
+    return 'https://billnotify.basnetsameer.com.np';
+  }
+  return url;
+};
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://billnotify.com.np'),
+  metadataBase: new URL(getAppUrl()),
   title: {
     default: 'BillNotify Nepal — Never Miss a Utility Bill',
     template: '%s | BillNotify Nepal',
@@ -25,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'BillNotify Nepal — Auto-Check Utility Bills',
     description: 'Save your NEA consumer IDs. We check when your bill is payable and send you an instant email alert.',
-    url: 'https://billnotify.com.np',
+    url: getAppUrl(),
     siteName: 'BillNotify Nepal',
     locale: 'en_US',
     type: 'website',
