@@ -6,9 +6,12 @@ import { join } from "path";
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/settings(.*)",
+  "/admin(.*)",
   "/api/accounts(.*)",
   "/api/settings(.*)",
   "/api/check-account(.*)",
+  "/api/admin(.*)",
+  "/api/upgrade(.*)",
 ]);
 // List of known bot user agents
 const BOT_USER_AGENTS = [
@@ -104,8 +107,11 @@ export const config = {
     "/site-info.md",
     "/dashboard(.*)",
     "/settings(.*)",
+    "/admin(.*)",
     "/api/accounts(.*)",
     "/api/settings(.*)",
     "/api/check-account(.*)",
+    "/api/admin(.*)",
+    "/api/upgrade(.*)",
   ],
 };

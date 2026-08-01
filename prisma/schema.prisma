@@ -19,6 +19,12 @@ enum UtilityType {
   WATER
 }
 
+enum PaymentSubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model UserProfile {
   id           String           @id @default(cuid())
   clerkId      String           @unique
@@ -28,8 +34,9 @@ model UserProfile {
   emailEnabled Boolean          @default(true)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
-  accounts     UtilityAccount[]
-  notifications NotificationLog[]
+  accounts           UtilityAccount[]
+  notifications      NotificationLog[]
+  paymentSubmissions PaymentSubmission[]
 }
 
 model UtilityAccount {
@@ -77,4 +84,17 @@ model Subscription {
   expiresAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PaymentSubmission {
+  id         String                  @id @default(cuid())
+  userId     String
+  user       UserProfile             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proofImage String
+  status     PaymentSubmissionStatus @default(PENDING)
+  submittedAt DateTime               @default(now())
+  reviewedAt DateTime?
+
+  @@index([userId])
+  @@index([status])
 }
