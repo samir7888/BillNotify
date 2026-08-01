@@ -1,20 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkNEABill } from "@/lib/providers/nea";
-import { sendBillReadyEmail } from "@/lib/email";
 import { shouldNotify, getCheckIntervalHours } from "@/lib/utils";
+import { sendBillReadyEmail } from "@/lib/email";
 import pLimit from "p-limit";
-import { emailQueue } from "@/lib/workers/email-worker";
 
 const CRON_SECRET = process.env.CRON_SECRET;
 
-export async function GET(req: NextRequest) {
-  // Verify cron secret
+async function handleCronRequest(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
-  const token = authHeader?.replace("Bearer ", "");
+  const token = authHeader?.replace("Bearer ", "").trim();
+  const headerSecret = req.headers.get("x-cron-secret")?.trim();
+  const querySecret = req.nextUrl.searchParams.get("secret")?.trim();
+  const vercelCronHeader = req.headers.get("x-vercel-cron");
+  const providedSecret = token || headerSecret || querySecret;
 
-  if (CRON_SECRET && token !== CRON_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (CRON_SECRET) {
+    const isAuthorized =
+      providedSecret === CRON_SECRET || vercelCronHeader === "1";
+
+    if (!isAuthorized) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   const now = new Date();
@@ -109,7 +116,7 @@ export async function GET(req: NextRequest) {
             const emailTo = account.emailOverride ?? account.user.email;
 
             try {
-              await emailQueue.add("send-email", {
+              await sendBillReadyEmail({
                 to: emailTo,
                 customerName:
                   result.customerName ?? account.customerName ?? "Customer",
@@ -188,4 +195,12 @@ export async function GET(req: NextRequest) {
       { status: 500 },
     );
   }
+}
+
+export async function GET(req: NextRequest) {
+  return handleCronRequest(req);
+}
+
+export async function POST(req: NextRequest) {
+  return handleCronRequest(req);
 }

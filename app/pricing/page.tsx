@@ -194,7 +194,7 @@ export default function PricingPage() {
                 <span style={{ fontSize: '3rem', fontWeight: 800, color: '#f1f5f9' }}>
                   NPR 49
                 </span>
-                <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>/month</span>
+                <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}></span>
               </div>
               <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: 1.6 }}>
                 For power users, landlords, and businesses managing multiple properties.
@@ -224,7 +224,7 @@ export default function PricingPage() {
                 fontSize: '0.95rem',
                 padding: '0.75rem',
               }}
-              disabled
+              
             >
               <Zap size={16} />
               Upgrade to Pro — Coming Soon

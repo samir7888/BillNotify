@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { UserButton } from '@clerk/nextjs'
+import { UserButton, SignOutButton } from '@clerk/nextjs'
 import { useState, useEffect } from 'react'
 import {
   LayoutDashboard,
@@ -172,24 +172,6 @@ export function Sidebar() {
             )
           })}
 
-          <div
-            style={{
-              fontSize: '0.65rem',
-              fontWeight: 700,
-              color: 'var(--text-xmuted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              padding: '0 0.875rem',
-              marginBottom: '0.5rem',
-              marginTop: '1.5rem',
-            }}
-          >
-            System
-          </div>
-          <Link href="/" className="nav-item" id="nav-home">
-            <Bell size={17} />
-            Notifications
-          </Link>
         </nav>
 
         {/* User Footer */}
@@ -209,7 +191,22 @@ export function Sidebar() {
             </div>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Manage profile</div>
           </div>
-          <LogOut size={15} color="var(--text-xmuted)" />
+          <SignOutButton>
+            <button
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.4rem',
+                borderRadius: '0.25rem',
+              }}
+              title="Sign Out"
+            >
+              <LogOut size={15} color="var(--text-xmuted)" />
+            </button>
+          </SignOutButton>
         </div>
       </aside>
 

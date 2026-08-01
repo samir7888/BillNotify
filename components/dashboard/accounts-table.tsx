@@ -111,7 +111,13 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
         </thead>
         <tbody>
           {accounts.map((account) => {
-            const statusColor = getStatusColor(account.lastStatus)
+            let displayStatus = account.lastStatus || ''
+            if (account.lastAmount === 0) {
+              displayStatus = 'Paid'
+            } else if (account.lastAmount && account.lastAmount > 0) {
+              displayStatus = 'Pending to Pay'
+            }
+            const statusColor = getStatusColor(displayStatus)
             const isChecking = checkingId === account.id
             const isDeleting = deletingId === account.id
 
@@ -174,14 +180,14 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
 
                 {/* Status */}
                 <td data-label="Status">
-                  {account.lastStatus ? (
+                  {displayStatus ? (
                     <span
                       className={`badge badge-${statusColor}`}
                       id={`status-${account.id}`}
                     >
-                      {account.lastStatus.length > 30
-                        ? account.lastStatus.substring(0, 30) + '…'
-                        : account.lastStatus}
+                      {displayStatus.length > 30
+                        ? displayStatus.substring(0, 30) + '…'
+                        : displayStatus}
                     </span>
                   ) : (
                     <span className="badge badge-gray">Not Checked</span>

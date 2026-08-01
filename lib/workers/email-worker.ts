@@ -11,7 +11,7 @@ if (!redisUrl) {
 // 2. Setup Connection with robust options
 const connection = new Redis(redisUrl, {
   maxRetriesPerRequest: null, // REQUIRED for BullMQ
-  enableReadyCheck: false,    // Helps with NOAUTH/Connection race conditions
+  enableReadyCheck: false, // Helps with NOAUTH/Connection race conditions
 });
 
 // 3. Define the Queue
@@ -29,10 +29,16 @@ const worker = new Worker(
   async (job) => {
     // Safety check: ensure job and data exist
     if (!job?.data) return;
-    
+
     const { data } = job;
+    const recipient = data.to ?? data.emailTo;
+
+    if (!recipient) {
+      throw new Error("Email recipient missing from job data");
+    }
+
     await sendBillReadyEmail({
-      to: data.emailTo,
+      to: recipient,
       customerName: data.customerName,
       consumerId: data.consumerId,
       amount: data.amount,
@@ -47,12 +53,13 @@ const worker = new Worker(
     concurrency: 5,
     removeOnComplete: { count: 1000 },
     removeOnFail: { count: 5000 },
-  }
+  },
 );
 
 // 5. Apply the 'noeviction' policy via code on startup
-connection.config("SET", "maxmemory-policy", "noeviction")
+connection
+  .config("SET", "maxmemory-policy", "noeviction")
   .then(() => console.log("✅ Redis policy set to noeviction"))
-  .catch(err => console.error("❌ Failed to set Redis policy:", err.message));
+  .catch((err) => console.error("❌ Failed to set Redis policy:", err.message));
 
 export default worker;

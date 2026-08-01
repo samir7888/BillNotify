@@ -11,27 +11,63 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://billnotify.com.np'),
   title: {
     default: 'BillNotify Nepal — Never Miss a Utility Bill',
     template: '%s | BillNotify Nepal',
   },
   description:
     'Get instant email alerts when your Nepal electricity or water bill becomes payable in eSewa or Khalti. Powered by real-time NEA data.',
-  keywords: ['NEA bill', 'Nepal electricity bill', 'eSewa', 'Khalti', 'bill notification', 'Nepal'],
+  keywords: ['NEA bill check', 'Nepal electricity bill', 'eSewa bill payment', 'Khalti', 'NEA utility notification', 'Nepal energy'],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'BillNotify Nepal',
-    description: 'Auto-check your Nepal utility bills and get notified instantly.',
+    title: 'BillNotify Nepal — Auto-Check Utility Bills',
+    description: 'Save your NEA consumer IDs. We check when your bill is payable and send you an instant email alert.',
+    url: 'https://billnotify.com.np',
+    siteName: 'BillNotify Nepal',
+    locale: 'en_US',
     type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BillNotify Nepal",
+    "applicationCategory": "UtilityBusiness",
+    "operatingSystem": "Web",
+    "description": "An automated utility bill checking and notification system for NEA (Nepal Electricity Authority).",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "NPR"
+    }
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className={`${inter.variable}`}>
         <ClerkProvider>
