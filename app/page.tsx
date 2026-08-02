@@ -333,8 +333,8 @@ export default function LandingPage() {
       <section style={{ padding: '4rem 0', background: 'var(--bg)', borderTop: '1px solid var(--border)' }}>
         <div className="container-page">
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <h2 className="heading-md" style={{ marginBottom: '1.5rem' }}>Understanding Your NEA Utility Bill</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.6' }}>
+            <h2 className="heading-md w-full text-center" style={{ marginBottom: '1.5rem' }}>Understanding Your NEA Utility Bill</h2>
+            <p className='w-full text-center text-balance' style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.6' }}>
               BillNotify Nepal is an automated utility notification platform. We help you avoid late fees by tracking your electricity bills.
             </p>
             
@@ -394,7 +394,7 @@ export default function LandingPage() {
       {/* ── Footer ───────────────────────────────────────── */}
       <footer style={{ borderTop: '1px solid var(--border)', padding: '2rem 0' }}>
         <div
-          className="container-page"
+          className="container-page flex-col md:flex content-center w-full "
           style={{
             display: 'flex',
             alignItems: 'center',

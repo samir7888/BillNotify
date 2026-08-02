@@ -1,250 +1,264 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { Pencil, Trash2, RefreshCw, Zap, Droplets } from 'lucide-react'
-import { formatCurrency, formatRelativeTime, getStatusColor } from '@/lib/utils'
+import { useState } from "react";
+import { toast } from "sonner";
+import {
+  Trash2,
+  RefreshCw,
+  Zap,
+  Droplets,
+  User,
+  Clock,
+  CreditCard,
+} from "lucide-react";
+import {
+  formatCurrency,
+  formatRelativeTime,
+  getStatusColor,
+} from "@/lib/helper";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface Account {
-  id: string
-  customerName: string | null
-  utilityType: string
-  consumerId: string
-  scNo: string
-  providerName: string
-  lastStatus: string | null
-  lastAmount: number | null
-  lastCheckedAt: string | null
-  lastBillMonth: string | null
-  active: boolean
+  id: string;
+  customerName: string | null;
+  utilityType: string;
+  consumerId: string;
+  scNo: string;
+  providerName: string;
+  lastStatus: string | null;
+  lastAmount: number | null;
+  lastCheckedAt: string | null;
+  lastBillMonth: string | null;
+  active: boolean;
 }
 
 interface AccountsTableProps {
-  accounts: Account[]
-  onRefresh: () => void
+  accounts: Account[];
+  onRefresh: () => void;
 }
 
 export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
-  console.log(accounts)
-  const [checkingId, setCheckingId] = useState<string | null>(null)
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  console.log(accounts);
+  const [checkingId, setCheckingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function handleCheckNow(id: string) {
-    setCheckingId(id)
+    setCheckingId(id);
     try {
-      const res = await fetch(`/api/check-account/${id}`, { method: 'POST' })
-      const data = await res.json()
-      console.log(data,'data')
+      const res = await fetch(`/api/check-account/${id}`, { method: "POST" });
+      const data = await res.json();
+      console.log(data, "data");
 
       if (!res.ok || !data.success) {
-        toast.error(data.error ?? 'Check failed. Please try again.')
+        toast.error(data.error ?? "Check failed. Please try again.");
       } else if (data.notified) {
-        toast.success('✅ Bill is ready! Email notification sent.')
+        toast.success("✅ Bill is ready! Email notification sent.");
       } else if (data.result?.payableAmount > 0) {
-        toast.info(`Bill found: NPR ${data.result.payableAmount?.toLocaleString()}. Already notified previously.`)
+        toast.info(
+          `Bill found: NPR ${data.result.payableAmount?.toLocaleString()}. Already notified previously.`
+        );
       } else {
-        toast.success('Check complete. No payable bill found yet.')
+        toast.success("Check complete. No payable bill found yet.");
       }
 
-      onRefresh()
+      onRefresh();
     } catch {
-      toast.error('Network error. Please try again.')
+      toast.error("Network error. Please try again.");
     } finally {
-      setCheckingId(null)
+      setCheckingId(null);
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this account? This cannot be undone.')) return
-    setDeletingId(id)
+    if (!confirm("Delete this account? This cannot be undone.")) return;
+    setDeletingId(id);
     try {
-      const res = await fetch(`/api/accounts/${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/accounts/${id}`, { method: "DELETE" });
       if (res.ok) {
-        toast.success('Account deleted.')
-        onRefresh()
+        toast.success("Account deleted.");
+        onRefresh();
       } else {
-        toast.error('Failed to delete account.')
+        toast.error("Failed to delete account.");
       }
     } catch {
-      toast.error('Network error.')
+      toast.error("Network error.");
     } finally {
-      setDeletingId(null)
+      setDeletingId(null);
     }
   }
 
   if (accounts.length === 0) {
     return (
-      <div
-        style={{
-          textAlign: 'center',
-          padding: '4rem 2rem',
-          border: '2px dashed var(--border)',
-          borderRadius: '1rem',
-          color: 'var(--text-muted)',
-        }}
-      >
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
-        <h3 className="heading-sm" style={{ marginBottom: '0.5rem', color: 'var(--text)' }}>
-          No accounts yet
-        </h3>
-        <p style={{ fontSize: '0.875rem' }}>
-          Add your first NEA consumer ID to start receiving bill alerts.
-        </p>
-      </div>
-    )
+      <Card className="border-dashed border-2 border-slate-200 bg-slate-50/50">
+        <CardContent className="flex flex-col items-center justify-center py-12">
+          <div className="text-6xl mb-4">📭</div>
+          <h3 className="text-xl font-semibold text-slate-900 mb-2">
+            No accounts yet
+          </h3>
+          <p className="text-slate-600 text-center max-w-sm">
+            Add your first NEA consumer ID to start receiving bill alerts and
+            manage your utility payments effortlessly.
+          </p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
-    <div className="table-wrap">
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>Type</th>
-            <th>Consumer ID</th>
-            <th>SC NO</th>
-            <th>Status</th>
-            <th>Amount</th>
-            <th>Last Checked</th>
-            <th style={{ textAlign: 'right' }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {accounts.map((account) => {
-            let displayStatus = account.lastStatus || ''
-            if (account.lastAmount === 0) {
-              displayStatus = 'Paid'
-            } else if (account.lastAmount && account.lastAmount > 0) {
-              displayStatus = 'Pending to Pay'
-            }
-            const statusColor = getStatusColor(displayStatus)
-            const isChecking = checkingId === account.id
-            const isDeleting = deletingId === account.id
+    <div className="grid gap-4">
+      {accounts.map((account) => {
+        let displayStatus = account.lastStatus || "";
+        if (account.lastAmount === 0) {
+          displayStatus = "Paid";
+        } else if (account.lastAmount && account.lastAmount > 0) {
+          displayStatus = "Pending to Pay";
+        }
+        const statusColor = getStatusColor(displayStatus);
+        const isChecking = checkingId === account.id;
+        const isDeleting = deletingId === account.id;
 
-            return (
-              <tr key={account.id}>
-                {/* Customer Name */}
-                <td data-label="Customer">
-                  <div style={{ fontWeight: 600, color: 'var(--text)' }}>
-                    {account.customerName ?? '—'}
-                  </div>
-
-                </td>
-
-                {/* Utility Type */}
-                <td data-label="Type">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    {account.utilityType === 'ELECTRICITY' ? (
-                      <Zap size={14} color="var(--warning)" />
-                    ) : (
-                      <Droplets size={14} color="var(--accent)" />
-                    )}
-                    <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>
-                      {account.utilityType === 'ELECTRICITY' ? 'Electricity' : 'Water'}
-                    </span>
-                  </div>
-                </td>
-
-                {/* Consumer ID */}
-                <td data-label="Consumer ID">
-                  <code
-                    style={{
-                      background: 'var(--bg)',
-                      padding: '0.2rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      fontSize: '0.8rem',
-                      fontFamily: 'monospace',
-                      color: 'var(--text)',
-                      border: '1px solid var(--border)',
-                    }}
+        return (
+          <Card
+            key={account.id}
+            className="group hover:shadow-md transition-all duration-200 border-slate-200 bg-white"
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`p-2 rounded-lg ${
+                      account.utilityType === "ELECTRICITY"
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-blue-100 text-blue-700"
+                    }`}
                   >
+                    {account.utilityType === "ELECTRICITY" ? (
+                      <Zap className="w-4 h-4" />
+                    ) : (
+                      <Droplets className="w-4 h-4" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                      <User className="w-4 h-4 text-slate-500" />
+                      {account.customerName ?? "Unknown Customer"}
+                    </h3>
+                    <p className="text-sm text-slate-600">
+                      {account.utilityType === "ELECTRICITY"
+                        ? "Electricity"
+                        : "Water"}{" "}
+                      Account
+                    </p>
+                  </div>
+                </div>
+
+                {/* Status Badge */}
+                <div className="flex flex-col items-end gap-2">
+                  {displayStatus ? (
+                    <Badge
+                      variant={
+                        statusColor === "green"
+                          ? "default"
+                          : statusColor === "red"
+                          ? "destructive"
+                          : "secondary"
+                      }
+                      className="whitespace-nowrap"
+                    >
+                      {displayStatus.length > 20
+                        ? displayStatus.substring(0, 20) + "…"
+                        : displayStatus}
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary">Not Checked</Badge>
+                  )}
+
+                  {/* Amount */}
+                  {account.lastAmount !== null && (
+                    <div className="text-right">
+                      <span
+                        className={`text-lg font-bold ${
+                          account.lastAmount > 0
+                            ? "text-emerald-600"
+                            : "text-slate-500"
+                        }`}
+                      >
+                        {formatCurrency(account.lastAmount)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                {/* Consumer ID */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                    Consumer ID
+                  </label>
+                  <code className="block px-2 py-1 bg-slate-100 rounded text-sm font-mono text-slate-800 border">
                     {account.consumerId}
                   </code>
-                </td>
-                {/* SC NO */}
-                <td data-label="SC NO">
-                  <code
-                    style={{
-                      background: 'var(--bg)',
-                      padding: '0.2rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      fontSize: '0.8rem',
-                      fontFamily: 'monospace',
-                      color: 'var(--text)',
-                      border: '1px solid var(--border)',
-                    }}
-                  >
+                </div>
+
+                {/* SC Number */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                    SC Number
+                  </label>
+                  <code className="block px-2 py-1 bg-slate-100 rounded text-sm font-mono text-slate-800 border">
                     {account.scNo}
                   </code>
-                </td>
-
-                {/* Status */}
-                <td data-label="Status">
-                  {displayStatus ? (
-                    <span
-                      className={`badge badge-${statusColor}`}
-                      id={`status-${account.id}`}
-                    >
-                      {displayStatus.length > 30
-                        ? displayStatus.substring(0, 30) + '…'
-                        : displayStatus}
-                    </span>
-                  ) : (
-                    <span className="badge badge-gray">Not Checked</span>
-                  )}
-                </td>
-
-                {/* Amount */}
-                <td data-label="Amount">
-                  <span
-                    style={{
-                      fontWeight: 700,
-                      color:
-                        account.lastAmount && account.lastAmount > 0
-                          ? 'var(--success)'
-                          : 'var(--text-muted)',
-                    }}
-                  >
-                    {formatCurrency(account.lastAmount)}
-                  </span>
-                </td>
+                </div>
 
                 {/* Last Checked */}
-                <td data-label="Last Checked" style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                  {formatRelativeTime(account.lastCheckedAt)}
-                </td>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Last Checked
+                  </label>
+                  <p className="text-sm text-slate-700">
+                    {formatRelativeTime(account.lastCheckedAt)}
+                  </p>
+                </div>
+              </div>
 
-                {/* Actions */}
-                <td data-label="Actions" style={{ textAlign: 'right' }}>
-                  <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      id={`check-now-${account.id}`}
-                      onClick={() => handleCheckNow(account.id)}
-                      disabled={isChecking || isDeleting}
-                      title="Check Now"
-                    >
-                      <RefreshCw size={14} className={isChecking ? 'animate-spin' : ''} style={isChecking ? { animation: 'spin 1s linear infinite' } : {}} />
-                      {isChecking ? 'Checking…' : 'Check'}
-                    </button>
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      id={`delete-${account.id}`}
-                      onClick={() => handleDelete(account.id)}
-                      disabled={isChecking || isDeleting}
-                      title="Delete"
-                      style={{ color: 'var(--danger)' }}
-                    >
-                      <Trash2 size={14} />
-                      {isDeleting ? '…' : ''}
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+              {/* Actions */}
+              <div className="flex gap-2 pt-2 border-t border-slate-100">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleCheckNow(account.id)}
+                  disabled={isChecking || isDeleting}
+                  className="flex-1"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 mr-2 ${
+                      isChecking ? "animate-spin" : ""
+                    }`}
+                  />
+                  {isChecking ? "Checking…" : "Check Now"}
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDelete(account.id)}
+                  disabled={isChecking || isDeleting}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {isDeleting ? "..." : ""}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
-  )
+  );
 }

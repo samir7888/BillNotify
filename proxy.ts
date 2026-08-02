@@ -1,18 +1,24 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { readFileSync } from "fs";
 import { join } from "path";
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/settings(.*)",
-  "/admin(.*)",
-  "/api/accounts(.*)",
-  "/api/settings(.*)",
-  "/api/check-account(.*)",
-  "/api/admin(.*)",
-  "/api/upgrade(.*)",
-]);
+
+const protectedRoutes = [
+  "/dashboard",
+  "/analytics",
+  "/settings",
+  "/admin",
+  "/api/accounts",
+  "/api/settings",
+  "/api/check-account",
+  "/api/admin",
+  "/api/upgrade",
+];
+
+const isProtectedRoute = (pathname: string) => {
+  return protectedRoutes.some((route) => pathname.startsWith(route));
+};
 // List of known bot user agents
 const BOT_USER_AGENTS = [
   "GPTBot",
@@ -46,7 +52,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   // Check if request is from a bot
   const isBot = BOT_USER_AGENTS.some((bot) =>
-    userAgent.toLowerCase().includes(bot.toLowerCase()),
+    userAgent.toLowerCase().includes(bot.toLowerCase())
   );
 
   // Check if bot is requesting markdown
@@ -96,7 +102,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Protect dashboard and settings routes
-  if (isProtectedRoute(req)) {
+  if (isProtectedRoute(pathname)) {
     await auth.protect();
   }
 });
@@ -106,6 +112,7 @@ export const config = {
     "/",
     "/site-info.md",
     "/dashboard(.*)",
+    "/analytics(.*)",
     "/settings(.*)",
     "/admin(.*)",
     "/api/accounts(.*)",
@@ -113,5 +120,6 @@ export const config = {
     "/api/check-account(.*)",
     "/api/admin(.*)",
     "/api/upgrade(.*)",
+    "/api/analytics(.*)",
   ],
 };

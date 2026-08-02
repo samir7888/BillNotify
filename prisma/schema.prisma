@@ -59,6 +59,7 @@ model UtilityAccount {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   notifications   NotificationLog[]
+  billHistory     BillHistory[]
 
   @@unique([userId, neaLocationCode, scNo, consumerId])
 }
@@ -84,6 +85,24 @@ model Subscription {
   expiresAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model BillHistory {
+  id          String         @id @default(cuid())
+  accountId   String
+  account     UtilityAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  amount      Float
+  billMonth   String         // Format: "2024-01" or "January 2024"
+  billDate    DateTime?      // Optional: specific bill date
+  status      String?        // e.g., "PAID", "UNPAID", "OVERDUE"
+  detectedAt  DateTime       @default(now())
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Ensure no duplicate bills for same account + month
+  @@unique([accountId, billMonth])
+  @@index([accountId])
+  @@index([billMonth])
 }
 
 model PaymentSubmission {

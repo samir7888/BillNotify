@@ -1,17 +1,36 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { X, Zap, Droplets, Loader2 } from 'lucide-react'
-import { FREE_ACCOUNT_LIMIT } from '@/lib/utils'
-import { neaLocations } from '@/lib/data/neo-locations'
+import { useState } from "react";
+import { toast } from "sonner";
+import { X, Zap, Droplets, Loader2 } from "lucide-react";
+import { neaLocations } from "@/lib/data/neo-locations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { FREE_ACCOUNT_LIMIT } from "@/lib/helper";
 
 interface AddAccountModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSuccess: () => void
-  plan: string
-  currentCount: number
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  plan: string;
+  currentCount: number;
 }
 
 export function AddAccountModal({
@@ -21,40 +40,47 @@ export function AddAccountModal({
   plan,
   currentCount,
 }: AddAccountModalProps) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    utilityType: 'ELECTRICITY',
-    neaLocationCode: '',
-    scNo: '',
-    consumerId: '',
-    emailOverride: '',
-  })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+    utilityType: "ELECTRICITY",
+    neaLocationCode: "",
+    scNo: "",
+    consumerId: "",
+    emailOverride: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isAtLimit = plan === 'FREE' && currentCount >= FREE_ACCOUNT_LIMIT()
+  const isAtLimit = plan === "FREE" && currentCount >= FREE_ACCOUNT_LIMIT();
 
   function validate() {
-    const e: Record<string, string> = {}
-    if (!formData.neaLocationCode.trim()) e.neaLocationCode = 'NEA Location Code is required'
-    if (!formData.scNo.trim()) e.scNo = 'SC No is required'
-    if (!formData.consumerId.trim()) e.consumerId = 'Consumer ID is required'
-    if (formData.emailOverride && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOverride)) {
-      e.emailOverride = 'Enter a valid email address'
+    const e: Record<string, string> = {};
+    if (!formData.neaLocationCode.trim())
+      e.neaLocationCode = "NEA Location Code is required";
+    if (!formData.scNo.trim()) e.scNo = "SC No is required";
+    if (!formData.consumerId.trim()) e.consumerId = "Consumer ID is required";
+    if (
+      formData.emailOverride &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOverride)
+    ) {
+      e.emailOverride = "Enter a valid email address";
     }
-    return e
+    return e;
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    const errs = validate()
-    if (Object.keys(errs).length > 0) { setErrors(errs); return }
-    setErrors({})
-    setLoading(true)
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+    setErrors({});
+    setLoading(true);
 
     try {
-      const res = await fetch('/api/accounts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/accounts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           utilityType: formData.utilityType,
           neaLocationCode: formData.neaLocationCode.trim(),
@@ -62,254 +88,274 @@ export function AddAccountModal({
           consumerId: formData.consumerId.trim(),
           emailOverride: formData.emailOverride.trim() || undefined,
         }),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
-      if (res.status === 403 && data.error === 'FREE_LIMIT_REACHED') {
-        toast.error('Free plan limit reached. Upgrade to Pro for unlimited accounts.')
-        onClose()
-        return
+      if (res.status === 403 && data.error === "FREE_LIMIT_REACHED") {
+        toast.error(
+          "Free plan limit reached. Upgrade to Pro for unlimited accounts."
+        );
+        onClose();
+        return;
       }
 
       if (res.status === 409) {
-        toast.error('This account is already saved.')
-        return
+        toast.error("This account is already saved.");
+        return;
       }
 
       if (!res.ok) {
-        toast.error(data.error ?? 'Failed to add account. Please check NEA details.')
-        return
+        toast.error(
+          data.error ?? "Failed to add account. Please check NEA details."
+        );
+        return;
       }
 
-      toast.success(`✅ Account added! ${data.account.customerName ? `Welcome, ${data.account.customerName}!` : ''}`)
-      setFormData({ utilityType: 'ELECTRICITY', neaLocationCode: '', scNo: '', consumerId: '', emailOverride: '' })
-      onClose()
-      onSuccess()
+      toast.success(
+        `✅ Account added! ${
+          data.account.customerName
+            ? `Welcome, ${data.account.customerName}!`
+            : ""
+        }`
+      );
+      setFormData({
+        utilityType: "ELECTRICITY",
+        neaLocationCode: "",
+        scNo: "",
+        consumerId: "",
+        emailOverride: "",
+      });
+      onClose();
+      onSuccess();
     } catch {
-      toast.error('Network error. Please try again.')
+      toast.error("Network error. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
-
-  if (!isOpen) return null
 
   // Upgrade prompt if at limit
   if (isAtLimit) {
     return (
-      <div className="modal-backdrop" onClick={onClose}>
-        <div className="modal-box animate-bounce-in" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 440 }}>
-          <div style={{ padding: '2.5rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚀</div>
-            <h2 className="heading-md" style={{ marginBottom: '0.75rem' }}>
-              Upgrade to Pro
-            </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>
-              You&apos;ve reached the <strong>{FREE_ACCOUNT_LIMIT()} account</strong> limit on the Free plan.
-              Upgrade to Pro for unlimited accounts and priority 2-hour checks.
-            </p>
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-              <button className="btn btn-outline" onClick={onClose} id="upgrade-modal-cancel">
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-md border-0 bg-white/95 backdrop-blur-sm">
+          <div className="text-center py-6">
+            <div className="text-6xl mb-6">🚀</div>
+            <DialogHeader className="space-y-3">
+              <DialogTitle className="text-2xl font-bold bg-linear-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                Upgrade to Pro
+              </DialogTitle>
+              <DialogDescription className="text-base leading-relaxed text-slate-600">
+                You've reached the{" "}
+                <strong className="text-slate-900">
+                  {FREE_ACCOUNT_LIMIT()} account
+                </strong>{" "}
+                limit on the Free plan. Upgrade to Pro for unlimited accounts
+                and priority 2-hour checks.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex gap-3 mt-6 justify-center">
+              <Button variant="outline" onClick={onClose}>
                 Cancel
-              </button>
-              <a href="/pricing" className="btn btn-primary" id="upgrade-modal-cta">
-                View Pricing →
-              </a>
+              </Button>
+              <Button
+                asChild
+                className="bg-linear-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700"
+              >
+                <a href="/pricing">View Pricing →</a>
+              </Button>
             </div>
           </div>
-        </div>
-      </div>
-    )
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-box " onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '1.5rem 1.5rem 0',
-          }}
-        >
-          <div>
-            <h2 className="heading-md">Add Utility Account</h2>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '0.25rem 0 0' }}>
-              We&apos;ll verify and auto-fill your customer name from NEA.
-            </p>
-          </div>
-          <button
-            className="btn btn-ghost btn-sm"
-            onClick={onClose}
-            id="add-account-modal-close"
-            style={{ padding: '0.4rem' }}
-          >
-            <X size={18} />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[500px] border-0 bg-white/95 backdrop-blur-sm max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-linear-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+              <Zap className="h-4 w-4 text-white" />
+            </div>
+            Add Utility Account
+          </DialogTitle>
+          <DialogDescription>
+            We'll verify and auto-fill your customer name from NEA.
+          </DialogDescription>
+        </DialogHeader>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} style={{ padding: '1.5rem' }}>
-          {/* Utility Type */}
-          <div style={{ marginBottom: '1.25rem' }}>
-            <label className="form-label">Utility Type</label>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Utility Type Selection */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Utility Type</Label>
+            <div className="grid grid-cols-2 gap-3">
               {[
-                { value: 'ELECTRICITY', label: 'Electricity', icon: Zap },
-                { value: 'WATER', label: 'Water (Soon)', icon: Droplets, disabled: true },
+                { value: "ELECTRICITY", label: "Electricity", icon: Zap },
+                {
+                  value: "WATER",
+                  label: "Water",
+                  icon: Droplets,
+                  disabled: true,
+                },
               ].map(({ value, label, icon: Icon, disabled }) => (
                 <button
                   key={value}
                   type="button"
                   disabled={disabled}
-                  onClick={() => !disabled && setFormData((f) => ({ ...f, utilityType: value }))}
-                  id={`utility-type-${value.toLowerCase()}`}
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    padding: '0.625rem 1rem',
-                    border: `2px solid ${formData.utilityType === value ? 'var(--primary)' : 'var(--border-2)'}`,
-                    borderRadius: '0.625rem',
-                    background: formData.utilityType === value ? 'rgb(79 70 229 / 0.08)' : 'var(--bg)',
-                    color: formData.utilityType === value ? 'var(--primary)' : 'var(--text-muted)',
-                    cursor: disabled ? 'not-allowed' : 'pointer',
-                    fontWeight: 600,
-                    fontSize: '0.875rem',
-                    opacity: disabled ? 0.5 : 1,
-                    transition: 'all 0.15s',
-                  }}
+                  onClick={() =>
+                    !disabled &&
+                    setFormData((f) => ({ ...f, utilityType: value }))
+                  }
+                  className={`
+                    relative flex items-center gap-2 p-3 rounded-xl border-2 transition-all
+                    ${
+                      formData.utilityType === value
+                        ? "border-violet-500 bg-violet-50 text-violet-700"
+                        : "border-slate-200 bg-white hover:border-slate-300 text-slate-600"
+                    }
+                    ${
+                      disabled
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
+                    }
+                  `}
                 >
-                  <Icon size={16} />
-                  {label}
+                  <Icon className="h-4 w-4" />
+                  <span className="font-medium text-sm">{label}</span>
+                  {disabled && (
+                    <Badge variant="secondary" className="ml-auto text-xs">
+                      Soon
+                    </Badge>
+                  )}
                 </button>
               ))}
             </div>
           </div>
 
           {/* NEA Location Code */}
-          <div style={{ marginBottom: '1rem' }}>
-            <label className="form-label" htmlFor="nea-location-code">
-              NEA Location Code
-            </label>
-            <select
-              id="nea-location-code"
-              className="form-input"
+          <div className="space-y-2">
+            <Label htmlFor="nea-location">NEA Location Code</Label>
+            <Select
               value={formData.neaLocationCode}
-              onChange={(e) => setFormData((f) => ({ ...f, neaLocationCode: e.target.value }))}
-            >
-
-              {
-                neaLocations.map((location) => (
-                  <option key={location.value} value={location.value} >
-                    {location.label}
-                  </option>
-                ))
+              onValueChange={(value) =>
+                setFormData((f) => ({ ...f, neaLocationCode: value || "" }))
               }
-            </select>
-            {errors.neaLocationCode && <p className="form-error">{errors.neaLocationCode}</p>}
-            <p style={{ fontSize: '0.72rem', color: 'var(--text-xmuted)', marginTop: '0.3rem' }}>
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select your NEA location" />
+              </SelectTrigger>
+              <SelectContent>
+                {neaLocations.map((location) => (
+                  <SelectItem key={location.value} value={location.value}>
+                    {location.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.neaLocationCode && (
+              <p className="text-sm text-red-600">{errors.neaLocationCode}</p>
+            )}
+            <p className="text-xs text-muted-foreground">
               Found on your electricity bill (District/Service Center code)
             </p>
           </div>
 
-          {/* SC No */}
-          <div style={{ marginBottom: '1rem' }}>
-            <label className="form-label" htmlFor="sc-no">
-              SC No (Service Connection Number)
-            </label>
-            <input
+          {/* SC Number */}
+          <div className="space-y-2">
+            <Label htmlFor="sc-no">SC No (Service Connection Number)</Label>
+            <Input
               id="sc-no"
-              className="form-input"
-              type="text"
               placeholder="e.g. 1234567"
               value={formData.scNo}
-              onChange={(e) => setFormData((f) => ({ ...f, scNo: e.target.value }))}
+              onChange={(e) =>
+                setFormData((f) => ({ ...f, scNo: e.target.value }))
+              }
+              className="bg-white/70 border-slate-200 focus:border-violet-500"
             />
-            {errors.scNo && <p className="form-error">{errors.scNo}</p>}
+            {errors.scNo && (
+              <p className="text-sm text-red-600">{errors.scNo}</p>
+            )}
           </div>
 
           {/* Consumer ID */}
-          <div style={{ marginBottom: '1rem' }}>
-            <label className="form-label" htmlFor="consumer-id">
-              Consumer ID
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="consumer-id">Consumer ID</Label>
+            <Input
               id="consumer-id"
-              className="form-input"
-              type="text"
               placeholder="e.g. 8181"
               value={formData.consumerId}
-              onChange={(e) => setFormData((f) => ({ ...f, consumerId: e.target.value }))}
+              onChange={(e) =>
+                setFormData((f) => ({ ...f, consumerId: e.target.value }))
+              }
+              className="bg-white/70 border-slate-200 focus:border-violet-500"
             />
-            {errors.consumerId && <p className="form-error">{errors.consumerId}</p>}
+            {errors.consumerId && (
+              <p className="text-sm text-red-600">{errors.consumerId}</p>
+            )}
           </div>
 
-          {/* Email Override (optional) */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label className="form-label" htmlFor="email-override">
+          {/* Email Override */}
+          <div className="space-y-2">
+            <Label htmlFor="email-override">
               Notification Email (optional)
-            </label>
-            <input
+            </Label>
+            <Input
               id="email-override"
-              className="form-input"
               type="email"
               placeholder="Leave blank to use your account email"
               value={formData.emailOverride}
-              onChange={(e) => setFormData((f) => ({ ...f, emailOverride: e.target.value }))}
+              onChange={(e) =>
+                setFormData((f) => ({ ...f, emailOverride: e.target.value }))
+              }
+              className="bg-white/70 border-slate-200 focus:border-violet-500"
             />
-            {errors.emailOverride && <p className="form-error">{errors.emailOverride}</p>}
+            {errors.emailOverride && (
+              <p className="text-sm text-red-600">{errors.emailOverride}</p>
+            )}
           </div>
 
-          <div
-            style={{
-              background: 'rgb(79 70 229 / 0.06)',
-              border: '1px solid rgb(79 70 229 / 0.15)',
-              borderRadius: '0.625rem',
-              padding: '0.75rem',
-              fontSize: '0.8rem',
-              color: 'var(--text-muted)',
-              marginBottom: '1.5rem',
-              lineHeight: 1.5,
-            }}
-          >
-            ℹ️ We&apos;ll instantly verify your details with NEA and auto-fill your customer name.
-            If NEA cannot find the account, an error will be shown.
-          </div>
+          {/* Info Card */}
+          <Card className="border-violet-200 bg-violet-50/50">
+            <CardContent className="p-4">
+              <p className="text-sm text-violet-700 leading-relaxed flex items-start gap-2">
+                <span className="text-base">ℹ️</span>
+                We'll instantly verify your details with NEA and auto-fill your
+                customer name. If NEA cannot find the account, an error will be
+                shown.
+              </p>
+            </CardContent>
+          </Card>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-2">
+            <Button
               type="button"
-              className="btn btn-outline"
+              variant="outline"
               onClick={onClose}
-              id="add-account-cancel"
-              style={{ flex: 1 }}
+              className="flex-1"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="btn btn-primary"
-              id="add-account-submit"
               disabled={loading}
-              style={{ flex: 2 }}
+              className="flex-2 bg-linear-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
             >
               {loading ? (
                 <>
-                  <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Verifying with NEA…
                 </>
               ) : (
-                'Add & Verify Account'
+                "Add & Verify Account"
               )}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
-  )
+      </DialogContent>
+    </Dialog>
+  );
 }

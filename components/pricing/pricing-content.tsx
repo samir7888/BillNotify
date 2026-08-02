@@ -1,66 +1,66 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useAuth } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
-import { Check, Zap, ArrowLeft } from 'lucide-react'
-import { UpgradeModal } from '@/components/pricing/upgrade-modal'
+import { useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { Check, Zap, ArrowLeft } from "lucide-react";
+import { UpgradeModal } from "@/components/pricing/upgrade-modal";
 
 const FREE_FEATURES = [
-  'Up to 3 utility accounts',
-  'Bill checks every 6 hours',
-  'Email notifications',
-  'NEA electricity support',
-  'Dashboard access',
-]
+  "Up to 1 utility accounts",
+  "Bill checks every 6 hours",
+  "Email notifications",
+  "NEA electricity support",
+  "Dashboard access",
+];
 
 const PRO_FEATURES = [
-  'Unlimited utility accounts',
-  'Priority checks every 2 hours',
-  'Email notifications',
-  'NEA electricity support',
-  'Dashboard access',
-  'Future: SMS alerts',
-  'Future: Telegram alerts',
-  'Priority support',
-]
+  "Unlimited utility accounts",
+  "Priority checks every 2 hours",
+  "Email notifications",
+  "NEA electricity support",
+  "Dashboard access",
+  "Future: SMS alerts",
+  "Future: Telegram alerts",
+  "Priority support",
+];
 
 export function PricingContent() {
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
-  const { isSignedIn } = useAuth()
-  const router = useRouter()
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
 
   function handleUpgradeClick() {
     if (!isSignedIn) {
-      router.push('/sign-in?redirect_url=/pricing')
-      return
+      router.push("/sign-in?redirect_url=/pricing");
+      return;
     }
-    setShowUpgradeModal(true)
+    setShowUpgradeModal(true);
   }
 
   return (
     <>
-      <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+      <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
         <div
           style={{
-            borderBottom: '1px solid var(--border)',
-            background: 'var(--surface)',
-            padding: '0.875rem 0',
+            borderBottom: "1px solid var(--border)",
+            background: "var(--surface)",
+            padding: "0.875rem 0",
           }}
         >
           <div className="container-page">
             <Link
               href="/dashboard"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                color: 'var(--text-muted)',
-                textDecoration: 'none',
-                fontSize: '0.875rem',
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                color: "var(--text-muted)",
+                textDecoration: "none",
+                fontSize: "0.875rem",
                 fontWeight: 500,
-                transition: 'color 0.15s',
+                transition: "color 0.15s",
               }}
             >
               <ArrowLeft size={16} />
@@ -69,74 +69,115 @@ export function PricingContent() {
           </div>
         </div>
 
-        <div className="container-page" style={{ padding: '5rem 1.5rem' }}>
-          <div className="pricing-header" style={{ textAlign: 'center', marginBottom: '4rem', padding: '0' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                background: 'rgb(79 70 229 / 0.08)',
-                border: '1px solid rgb(79 70 229 / 0.2)',
-                borderRadius: '9999px',
-                padding: '0.35rem 1rem',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                color: 'var(--primary)',
-                marginBottom: '1.5rem',
-              }}
-            >
+        <div className="container-page" style={{ padding: "5rem 1.5rem" }}>
+          <div className="pricing-header text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-violet-50 border border-violet-200 rounded-full px-4 py-2 text-sm font-semibold text-violet-700 mb-6">
+              <Zap className="w-4 h-4" />
               Simple, transparent pricing
             </div>
-            <h1 className="heading-lg" style={{ marginBottom: '1rem' }}>
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 leading-tight">
               Choose Your Plan
             </h1>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '480px', margin: '0 auto', lineHeight: 1.7 }}>
-              Start free and upgrade when you need more accounts or faster checks.
-              Pro is a one-time payment — no recurring fees.
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Start free and upgrade when you need more accounts or faster
+              checks. Pro is a{" "}
+              <strong className="text-slate-900">one-time payment</strong> — no
+              recurring fees.
             </p>
           </div>
 
           <div
             className="pricing-cards-grid"
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '1.5rem',
-              maxWidth: '760px',
-              margin: '0 auto',
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "1.5rem",
+              maxWidth: "760px",
+              margin: "0 auto",
             }}
           >
-            <div className="card animate-fade-in" style={{ padding: '2rem' }} id="pricing-free-card">
-              <div style={{ marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <span style={{ fontSize: '1.5rem' }}>🆓</span>
+            <div
+              className="card animate-fade-in"
+              style={{ padding: "2rem" }}
+              id="pricing-free-card"
+            >
+              <div style={{ marginBottom: "2rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>🆓</span>
                   <span
                     style={{
-                      fontSize: '0.7rem',
+                      fontSize: "0.7rem",
                       fontWeight: 700,
-                      color: 'var(--text-muted)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
+                      color: "var(--text-muted)",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
                     }}
                   >
                     Free Plan
                   </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--text)' }}>NPR 0</span>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>/month</span>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: "0.25rem",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "3rem",
+                      fontWeight: 800,
+                      color: "var(--text)",
+                    }}
+                  >
+                    NPR 0
+                  </span>
+                  <span
+                    style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}
+                  >
+                    /month
+                  </span>
                 </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                  Perfect for a single household managing a few utility connections.
+                <p
+                  style={{
+                    color: "var(--text-muted)",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Perfect for a single household managing a few utility
+                  connections.
                 </p>
               </div>
 
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: "0 0 2rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.75rem",
+                }}
+              >
                 {FREE_FEATURES.map((feat) => (
                   <li
                     key={feat}
-                    style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', fontSize: '0.875rem', color: 'var(--text)' }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.625rem",
+                      fontSize: "0.875rem",
+                      color: "var(--text)",
+                    }}
                   >
                     <Check size={15} color="var(--success)" strokeWidth={2.5} />
                     {feat}
@@ -148,7 +189,7 @@ export function PricingContent() {
                 href="/dashboard"
                 className="btn btn-outline"
                 id="pricing-free-cta"
-                style={{ width: '100%', justifyContent: 'center' }}
+                style={{ width: "100%", justifyContent: "center" }}
               >
                 Get Started Free
               </Link>
@@ -156,61 +197,109 @@ export function PricingContent() {
 
             <div
               className="card pricing-card-pro animate-fade-in"
-              style={{ padding: '2rem', animationDelay: '0.1s' }}
+              style={{ padding: "2rem", animationDelay: "0.1s" }}
               id="pricing-pro-card"
             >
               <div
                 style={{
-                  position: 'absolute',
-                  top: '-1px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                  color: 'white',
-                  fontSize: '0.7rem',
+                  position: "absolute",
+                  top: "-1px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                  color: "white",
+                  fontSize: "0.7rem",
                   fontWeight: 700,
-                  padding: '0.3rem 1rem',
-                  borderRadius: '0 0 0.5rem 0.5rem',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
+                  padding: "0.3rem 1rem",
+                  borderRadius: "0 0 0.5rem 0.5rem",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
                 }}
               >
                 Most Popular
               </div>
 
-              <div style={{ marginBottom: '2rem', marginTop: '0.75rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+              <div style={{ marginBottom: "2rem", marginTop: "0.75rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.75rem",
+                  }}
+                >
                   <Zap size={20} color="#a78bfa" />
                   <span
                     style={{
-                      fontSize: '0.7rem',
+                      fontSize: "0.7rem",
                       fontWeight: 700,
-                      color: '#a78bfa',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
+                      color: "#a78bfa",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
                     }}
                   >
                     Pro Plan
                   </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '3rem', fontWeight: 800, color: '#f1f5f9' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: "0.25rem",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "3rem",
+                      fontWeight: 800,
+                      color: "#f1f5f9",
+                    }}
+                  >
                     NPR 49
                   </span>
-                  <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>lifetime</span>
+                  <span style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
+                    lifetime
+                  </span>
                 </div>
-                <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                  One-time payment for unlimited accounts and priority checks — forever.
+                <p
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  One-time payment for unlimited accounts and priority checks —
+                  forever.
                 </p>
               </div>
 
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: "0 0 2rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.75rem",
+                }}
+              >
                 {PRO_FEATURES.map((feat) => (
                   <li
                     key={feat}
-                    style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', fontSize: '0.875rem', color: feat.startsWith('Future') ? '#6366f1' : '#e2e8f0' }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.625rem",
+                      fontSize: "0.875rem",
+                      color: feat.startsWith("Future") ? "#6366f1" : "#e2e8f0",
+                    }}
                   >
-                    <Check size={15} color={feat.startsWith('Future') ? '#6366f1' : '#a78bfa'} strokeWidth={2.5} />
+                    <Check
+                      size={15}
+                      color={feat.startsWith("Future") ? "#6366f1" : "#a78bfa"}
+                      strokeWidth={2.5}
+                    />
                     {feat}
                   </li>
                 ))}
@@ -221,26 +310,39 @@ export function PricingContent() {
                 id="pricing-pro-cta"
                 onClick={handleUpgradeClick}
                 style={{
-                  width: '100%',
-                  justifyContent: 'center',
-                  background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                  boxShadow: '0 4px 20px rgb(79 70 229 / 0.4)',
-                  fontSize: '0.95rem',
-                  padding: '0.75rem',
+                  width: "100%",
+                  justifyContent: "center",
+                  background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                  boxShadow: "0 4px 20px rgb(79 70 229 / 0.4)",
+                  fontSize: "0.95rem",
+                  padding: "0.75rem",
                 }}
               >
                 <Zap size={16} />
                 Upgrade to Pro
               </button>
 
-              <p style={{ textAlign: 'center', fontSize: '0.72rem', color: '#64748b', marginTop: '0.75rem' }}>
+              <p
+                style={{
+                  textAlign: "center",
+                  fontSize: "0.72rem",
+                  color: "#64748b",
+                  marginTop: "0.75rem",
+                }}
+              >
                 Pay via QR code · Manual verification within a few hours
               </p>
             </div>
           </div>
 
-          <div className="comparison-table-wrap hidden md:flex md:flex-col" style={{ maxWidth: '700px', margin: '4rem auto 0' }}>
-            <h2 className="heading-md" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div
+            className="comparison-table-wrap hidden md:flex md:flex-col"
+            style={{ maxWidth: "700px", margin: "4rem auto 0" }}
+          >
+            <h2
+              className="heading-md"
+              style={{ textAlign: "center", marginBottom: "2rem" }}
+            >
               Plan Comparison
             </h2>
             <div className="table-wrap">
@@ -248,32 +350,56 @@ export function PricingContent() {
                 <thead>
                   <tr>
                     <th>Feature</th>
-                    <th style={{ textAlign: 'center' }}>Free</th>
-                    <th style={{ textAlign: 'center' }}>Pro</th>
+                    <th style={{ textAlign: "center" }}>Free</th>
+                    <th style={{ textAlign: "center" }}>Pro</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    { feature: 'Utility Accounts', free: '3', pro: 'Unlimited' },
-                    { feature: 'Bill Check Frequency', free: 'Every 6 hours', pro: 'Every 2 hours' },
-                    { feature: 'Email Notifications', free: '✓', pro: '✓' },
-                    { feature: 'NEA Electricity', free: '✓', pro: '✓' },
-                    { feature: 'Water / KUKL (Soon)', free: '✓', pro: '✓' },
-                    { feature: 'SMS Alerts (Soon)', free: '—', pro: '✓' },
-                    { feature: 'Telegram Alerts (Soon)', free: '—', pro: '✓' },
-                    { feature: 'Priority Support', free: '—', pro: '✓' },
-                    { feature: 'Pricing', free: 'Free', pro: 'NPR 49 lifetime' },
+                    {
+                      feature: "Utility Accounts",
+                      free: "1",
+                      pro: "Unlimited",
+                    },
+                    {
+                      feature: "Bill Check Frequency",
+                      free: "Every 6 hours",
+                      pro: "Every 2 hours",
+                    },
+                    { feature: "Email Notifications", free: "✓", pro: "✓" },
+                    { feature: "NEA Electricity", free: "✓", pro: "✓" },
+                    { feature: "Water / KUKL (Soon)", free: "✓", pro: "✓" },
+                    { feature: "SMS Alerts (Soon)", free: "—", pro: "✓" },
+                    { feature: "Telegram Alerts (Soon)", free: "—", pro: "✓" },
+                    { feature: "Priority Support", free: "—", pro: "✓" },
+                    {
+                      feature: "Pricing",
+                      free: "Free",
+                      pro: "NPR 49 lifetime",
+                    },
                   ].map(({ feature, free, pro }) => (
                     <tr key={feature}>
-                      <td style={{ fontWeight: 500 }} data-plan="Feature">{feature}</td>
-                      <td style={{ textAlign: 'center', color: free === '—' ? 'var(--text-xmuted)' : 'var(--text)' }} data-plan="Free">
+                      <td style={{ fontWeight: 500 }} data-plan="Feature">
+                        {feature}
+                      </td>
+                      <td
+                        style={{
+                          textAlign: "center",
+                          color:
+                            free === "—" ? "var(--text-xmuted)" : "var(--text)",
+                        }}
+                        data-plan="Free"
+                      >
                         {free}
                       </td>
                       <td
                         style={{
-                          textAlign: 'center',
-                          color: pro === '—' ? 'var(--text-xmuted)' : 'var(--primary)',
-                          fontWeight: pro !== '—' ? 600 : 400,
+                          textAlign: "center",
+                          color:
+                            pro === "—"
+                              ? "var(--text-xmuted)"
+                              : "var(--primary)",
+                          fontWeight: pro !== "—" ? 600 : 400,
                         }}
                         data-plan="Pro"
                       >
@@ -286,34 +412,58 @@ export function PricingContent() {
             </div>
           </div>
 
-          <div style={{ maxWidth: '600px', margin: '4rem auto 0' }}>
-            <h2 className="heading-md" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{ maxWidth: "600px", margin: "4rem auto 0" }}>
+            <h2
+              className="heading-md"
+              style={{ textAlign: "center", marginBottom: "2rem" }}
+            >
               Frequently Asked Questions
             </h2>
-            <div className="faq-container" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div
+              className="faq-container"
+              style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+            >
               {[
                 {
-                  q: 'How does the bill check work?',
+                  q: "How does the bill check work?",
                   a: "We send a request to NEA's billing portal on your behalf, parse the response, and notify you when a payable amount appears. It's the same check you'd do manually on neabilling.com.",
                 },
                 {
-                  q: 'Is my consumer ID safe?',
-                  a: 'Yes. We only store your public consumer identifiers — the same information printed on your electricity bill. We never store passwords or payment details.',
+                  q: "Is my consumer ID safe?",
+                  a: "Yes. We only store your public consumer identifiers — the same information printed on your electricity bill. We never store passwords or payment details.",
                 },
                 {
-                  q: 'How do I upgrade to Pro?',
+                  q: "How do I upgrade to Pro?",
                   a: 'Click "Upgrade to Pro", scan the QR code to pay NPR 49 (one-time), upload your payment screenshot, and wait for verification. Pro access is activated manually after we confirm your payment.',
                 },
                 {
-                  q: 'Can I set a different email for alerts?',
-                  a: 'Yes! Each account can have its own notification email override. This is useful for managing bills on behalf of family or tenants.',
+                  q: "Can I set a different email for alerts?",
+                  a: "Yes! Each account can have its own notification email override. This is useful for managing bills on behalf of family or tenants.",
                 },
               ].map(({ q, a }) => (
-                <div key={q} className="card faq-card" style={{ padding: '1.25rem' }}>
-                  <h3 style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text)' }}>
+                <div
+                  key={q}
+                  className="card faq-card"
+                  style={{ padding: "1.25rem" }}
+                >
+                  <h3
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "0.9rem",
+                      marginBottom: "0.5rem",
+                      color: "var(--text)",
+                    }}
+                  >
                     {q}
                   </h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
+                  <p
+                    style={{
+                      color: "var(--text-muted)",
+                      fontSize: "0.85rem",
+                      lineHeight: 1.6,
+                      margin: 0,
+                    }}
+                  >
                     {a}
                   </p>
                 </div>
@@ -323,7 +473,10 @@ export function PricingContent() {
         </div>
       </div>
 
-      <UpgradeModal isOpen={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+      />
     </>
-  )
+  );
 }

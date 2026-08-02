@@ -45,7 +45,7 @@ export function Navbar() {
                     >
                         <Zap size={18} color="white" />
                     </div>
-                    <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text)' }}>
+                    <span className='hidden md:flex' style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text)' }}>
                         BillNotify <span style={{ color: 'var(--primary)' }}>Nepal</span>
                     </span>
                 </div>
@@ -61,10 +61,10 @@ export function Navbar() {
                     {!user ? (
                         <>
                             <SignInButton mode="modal">
-                                {/* <button className="btn btn-outline btn-sm">Sign In</button> */}
+                                <button className="btn btn-outline btn-sm">Sign In</button>
                             </SignInButton>
                             <SignUpButton mode="modal">
-                                {/* <button className="btn btn-primary btn-sm">Get Started Free</button> */}
+                                <button className="btn btn-primary btn-sm">Get Started Free</button>
                             </SignUpButton>
                         </>
                     ) : (
