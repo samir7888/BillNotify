@@ -353,7 +353,9 @@ export default function LandingPage() {
                   How do I pay my NEA bill online?
                 </dt>
                 <dd style={{ color: 'var(--text-muted)', lineHeight: '1.6', margin: 0 }}>
-                  You can pay your NEA electricity bill online in Nepal using digital wallets like eSewa, Khalti, or mobile banking apps. BillNotify Nepal alerts you exactly when the bill is marked as "READY_TO_PAY" in the NEA system.
+                  You can pay your NEA electricity bill online in Nepal using digital wallets like eSewa,
+                   Khalti, or mobile banking apps. BillNotify Nepal alerts you exactly when the
+                    bill is marked as &quot;READY TO PAY&quot; in the NEA system.
                 </dd>
               </div>
             </dl>

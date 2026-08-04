@@ -3,7 +3,7 @@ import { AdminPanel } from '@/components/admin/admin-panel'
 
 export const metadata: Metadata = {
   title: 'Admin — Payment Approvals',
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
 }
 
 export default function AdminPage() {

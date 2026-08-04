@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     canonical: '/analytics',
   },
   robots: {
-    index: false,
+    index: true,
     follow: true,
   },
 }
