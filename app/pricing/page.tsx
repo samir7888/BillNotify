@@ -4,6 +4,9 @@ import { PricingContent } from '@/components/pricing/pricing-content'
 export const metadata: Metadata = {
   title: 'Pricing',
   description: 'Choose the BillNotify Nepal plan that fits your needs.',
+  alternates: {
+    canonical: '/pricing',
+  },
 }
 
 export default function PricingPage() {

@@ -20,13 +20,13 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
+
 const getAppUrl = () => {
-  const url = process.env.NEXT_PUBLIC_APP_URL;
-  if (!url || url.trim() === "") {
-    return "https://billnotify.basnetsameer.com.np";
-  }
-  return url;
+  const url = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (!url) return "https://billnotify.basnetsameer.com.np";
+  return url.replace(/\/+$/, "");
 };
+
 export const metadata: Metadata = {
   metadataBase: new URL(getAppUrl()),
   title: {
@@ -43,9 +43,6 @@ export const metadata: Metadata = {
     "NEA utility notification",
     "Nepal energy",
   ],
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: "BillNotify Nepal — Auto-Check Utility Bills",
     description:
