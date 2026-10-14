@@ -22,11 +22,16 @@ export interface NEABillResult {
 const NEA_URL = 'https://www.neabilling.com/viewonline/viewonlineresult/'
 
 function getTodayFormatted(): string {
-  const today = new Date()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0')
-  const year = today.getFullYear()
-  return `${month}/${day}/${year}`
+  // NEA expects MM/DD/YYYY. Use Nepal time so the date is right even when the
+  // server (e.g. Vercel) runs in UTC.
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Kathmandu',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date())
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? ''
+  return `${get('month')}/${get('day')}/${get('year')}`
 }
 
 export async function checkNEABill(params: NEACheckParams): Promise<NEABillResult> {
@@ -71,152 +76,170 @@ export async function checkNEABill(params: NEACheckParams): Promise<NEABillResul
   }
 }
 
+interface BillRow {
+  status: string
+  dueBillOf: string
+  payableAmount: number
+}
+
+const NO_DATA_MARKERS = ['no data', 'not found', 'invalid', 'please check']
+
+const clean = (value?: string) => (value || '').replace(/\s+/g, ' ').trim()
+
+const toNumber = (value?: string) => {
+  const num = parseFloat((value || '').replace(/[^0-9.-]/g, ''))
+  return isNaN(num) ? 0 : num
+}
+
+// "Customer Name :" -> "customer name"
+const normalizeLabel = (value?: string) =>
+  clean(value).replace(/[:：]\s*$/, '').trim().toLowerCase()
+
+/**
+ * Expand a row's cells into a column-position array so that colspan'd cells
+ * (e.g. the "TOTAL" label) don't shift later columns.
+ */
+function expandRow(
+  $: cheerio.CheerioAPI,
+  row: ReturnType<cheerio.CheerioAPI>,
+) {
+  const cols: string[] = []
+  row.children('td,th').each((_, cell) => {
+    const span = Math.max(parseInt($(cell).attr('colspan') || '1', 10) || 1, 1)
+    const text = clean($(cell).text())
+    for (let i = 0; i < span; i++) cols.push(i === 0 ? text : '')
+  })
+  return cols
+}
+
 export function parseNEAHtml(html: string): NEABillResult {
   const $ = cheerio.load(html)
 
-  const clean = (value?: string) =>
-    (value || '').replace(/\s+/g, ' ').trim()
-
-  const toNumber = (value?: string) => {
-    const num = parseFloat((value || '').replace(/[^0-9.-]/g, ''))
-    return isNaN(num) ? 0 : num
-  }
+  // Script/style contents are part of body.text() and often contain words like
+  // "invalid"; they must never be treated as page content.
+  $('script, style, noscript, template').remove()
 
   const bodyText = clean($('body').text()).toLowerCase()
 
-  // invalid / empty response checks
-  if (
-    bodyText.includes('no data') ||
-    bodyText.includes('not found') ||
-    bodyText.includes('invalid') ||
-    bodyText.includes('please check')
-  ) {
-    return {
-      success: false,
-      error:
-        'No bill data found. Please check the location code, SC No, and Consumer ID.',
-    }
-  }
-
-  const result: NEABillResult = {
-    success: true,
-  }
+  const result: NEABillResult = { success: true }
 
   // -----------------------------------
-  // Consumer Details
+  // Consumer details (label cell -> next cell)
   // -----------------------------------
-  $('td').each((_, el) => {
-    const text = clean($(el).text()).toLowerCase()
+  $('td, th').each((_, el) => {
+    const label = normalizeLabel($(el).text())
+    if (!label || label.length > 30) return
+    const value = clean($(el).next('td').text())
+    if (!value) return
 
-    if (text === 'customer name') {
-      result.customerName = clean($(el).next('td').text())
-    }
-
-    if (text === 'sc no') {
-      result.scNo = clean($(el).next('td').text())
-    }
-
-    if (text === 'nea location') {
-      result.neaLocation = clean($(el).next('td').text())
-    }
-
-    if (text === 'consumer id') {
-      result.consumerId = clean($(el).next('td').text())
-    }
+    if (label === 'customer name' && !result.customerName) result.customerName = value
+    else if ((label === 'sc no' || label === 'sc no.') && !result.scNo) result.scNo = value
+    else if (label === 'nea location' && !result.neaLocation) result.neaLocation = value
+    else if (label === 'consumer id' && !result.consumerId) result.consumerId = value
   })
 
   // -----------------------------------
-  // Bill Rows
+  // Bill table. Only look at innermost rows so nested tables are not double
+  // counted, and map columns by header text with a positional fallback.
   // -----------------------------------
-  const billRows: {
-    status: string
-    dueBillOf: string
-    payableAmount: number
-    billAmt: number
-  }[] = []
+  const rows = $('tr')
+    .filter((_, tr) => $(tr).find('tr').length === 0)
+    .toArray()
 
-  $('tr').each((_, row) => {
-    const cells = $(row).find('td')
+  let statusIdx = 1
+  let dueBillIdx = 2
+  let payableIdx = 8
+  let headerSeen = false
 
-    // Actual bill rows have 13 columns
-    if (cells.length === 13) {
-      const sno = clean($(cells[0]).text())
-      const status = clean($(cells[1]).text())
-      const dueBillOf = clean($(cells[2]).text())
-      const billAmt = toNumber($(cells[5]).text())
-      const payableAmount = toNumber($(cells[8]).text())
+  const billRows: BillRow[] = []
+  let totalPayable = 0
+  let totalFound = false
 
-      // Skip TOTAL row
-      if (!sno) return
+  for (const tr of rows) {
+    const row = $(tr)
+    const cols = expandRow($, row)
+    if (cols.length < 3) continue
 
+    const lower = cols.map((c) => c.toLowerCase())
+
+    // Header row: contains a "payable" column and a "status" column
+    const pIdx = lower.findIndex((c) => c.includes('payable'))
+    const sIdx = lower.findIndex((c) => c === 'status' || c.includes('bill status'))
+    if (!headerSeen && pIdx !== -1 && sIdx !== -1 && !/\d/.test(cols[pIdx])) {
+      headerSeen = true
+      payableIdx = pIdx
+      statusIdx = sIdx
+      const dIdx = lower.findIndex((c) => c.includes('due bill') || c.includes('bill of'))
+      if (dIdx !== -1) dueBillIdx = dIdx
+      continue
+    }
+
+    // TOTAL row: first non-empty cell is "TOTAL"
+    const firstText = cols.find((c) => c)?.toUpperCase() ?? ''
+    if (firstText === 'TOTAL' || firstText.startsWith('TOTAL ')) {
+      totalFound = true
+      totalPayable = toNumber(cols[payableIdx])
+      continue
+    }
+
+    // Data row: first column is a serial number, and enough columns exist
+    if (cols.length > payableIdx && /^\d+$/.test(cols[0])) {
       billRows.push({
-        status,
-        dueBillOf,
-        payableAmount,
-        billAmt,
+        status: cols[statusIdx] ?? '',
+        dueBillOf: cols[dueBillIdx] ?? '',
+        payableAmount: toNumber(cols[payableIdx]),
       })
     }
-  })
+  }
 
   // -----------------------------------
-  // Total Row
+  // Nothing parsed: figure out why
   // -----------------------------------
-  let totalPayable = 0
+  const parsedSomething =
+    !!result.customerName ||
+    !!result.consumerId ||
+    !!result.scNo ||
+    billRows.length > 0 ||
+    totalFound
 
-  $('tr').each((_, row) => {
-    const rowText = clean($(row).text()).toUpperCase()
-
-    if (rowText.includes('TOTAL')) {
-      const cells = $(row).find('td')
-
-      if (cells.length >= 9) {
-        totalPayable = toNumber($(cells[8]).text())
+  if (!parsedSomething) {
+    if (NO_DATA_MARKERS.some((m) => bodyText.includes(m))) {
+      return {
+        success: false,
+        error:
+          'No bill data found. Please check the location code, SC No, and Consumer ID.',
       }
     }
-  })
-
-  // -----------------------------------
-  // Final Mapping
-  // -----------------------------------
-  if (billRows.length > 0) {
-    const first = billRows[0]
-
-    result.rawStatus = first.status
-    result.status = first.status
-    result.dueBillOf = first.dueBillOf
-  }
-
-  result.payableAmount = totalPayable
-
-  // If total row not found, fallback highest payable row
-  if (!result.payableAmount && billRows.length > 0) {
-    result.payableAmount = Math.max(
-      ...billRows.map((row) => row.payableAmount)
-    )
-  }
-
-  // -----------------------------------
-  // Business Logic
-  // -----------------------------------
-  if ((result.payableAmount ?? 0) > 0) {
-    result.status = 'READY_TO_PAY'
-  } else if (!result.status) {
-    result.status = 'NO_DUE'
-  }
-
-  // -----------------------------------
-  // Final Validation
-  // -----------------------------------
-  if (
-    !result.customerName &&
-    !result.consumerId &&
-    result.payableAmount === undefined
-  ) {
     return {
       success: false,
       error:
         'Could not parse bill data from NEA response. The page format may have changed.',
     }
+  }
+
+  // -----------------------------------
+  // Final mapping
+  // -----------------------------------
+  if (billRows.length > 0) {
+    const first = billRows[0]
+    result.rawStatus = first.status
+    result.status = first.status
+    result.dueBillOf = first.dueBillOf
+  }
+
+  result.payableAmount = totalFound
+    ? totalPayable
+    : billRows.reduce((sum, r) => sum + r.payableAmount, 0)
+
+  // Total row present but empty/zero: fall back to summing rows
+  if (!result.payableAmount && billRows.length > 0) {
+    result.payableAmount = billRows.reduce((sum, r) => sum + r.payableAmount, 0)
+  }
+
+  if ((result.payableAmount ?? 0) > 0) {
+    result.status = 'READY_TO_PAY'
+  } else if (!result.status) {
+    result.status = 'NO_DUE'
   }
 
   return result
