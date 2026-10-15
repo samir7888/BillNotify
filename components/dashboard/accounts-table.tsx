@@ -40,7 +40,6 @@ interface AccountsTableProps {
 }
 
 export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
-  console.log(accounts);
   const [checkingId, setCheckingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -49,7 +48,6 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
     try {
       const res = await fetch(`/api/check-account/${id}`, { method: "POST" });
       const data = await res.json();
-      console.log(data, "data");
 
       if (!res.ok || !data.success) {
         toast.error(data.error ?? "Check failed. Please try again.");
@@ -179,10 +177,10 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
                   {account.lastAmount !== null && (
                     <div className="text-right">
                       <span
-                        className={`text-lg font-bold ${
+                        className={`whitespace-nowrap text-lg font-bold ${
                           account.lastAmount > 0
-                            ? "text-emerald-600"
-                            : "text-slate-500"
+                            ? "rounded-sm bg-signal-soft px-2 py-0.5 text-ink"
+                            : "text-violet-500"
                         }`}
                       >
                         {formatCurrency(account.lastAmount)}
@@ -197,7 +195,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 {/* Consumer ID */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  <label className="text-xs font-medium text-slate-500">
                     Consumer ID
                   </label>
                   <code className="block px-2 py-1 bg-slate-100 rounded text-sm font-mono text-slate-800 border">
@@ -207,7 +205,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
 
                 {/* SC Number */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  <label className="text-xs font-medium text-slate-500">
                     SC Number
                   </label>
                   <code className="block px-2 py-1 bg-slate-100 rounded text-sm font-mono text-slate-800 border">
@@ -217,7 +215,7 @@ export function AccountsTable({ accounts, onRefresh }: AccountsTableProps) {
 
                 {/* Last Checked */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <label className="text-xs font-medium text-slate-500 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     Last Checked
                   </label>

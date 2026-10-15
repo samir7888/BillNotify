@@ -139,11 +139,11 @@ export function AddAccountModal({
   if (isAtLimit) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md border-0 bg-white/95 backdrop-blur-sm">
+        <DialogContent className="sm:max-w-md border-0 bg-white/95">
           <div className="text-center py-6">
             <div className="text-6xl mb-6">🚀</div>
             <DialogHeader className="space-y-3">
-              <DialogTitle className="text-2xl font-bold bg-linear-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+              <DialogTitle className="text-2xl font-bold text-violet-700">
                 Upgrade to Pro
               </DialogTitle>
               <DialogDescription className="text-base leading-relaxed text-slate-600">
@@ -161,7 +161,7 @@ export function AddAccountModal({
               </Button>
               <Button
                 asChild
-                className="bg-linear-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700"
+                className="bg-violet-700 hover:bg-violet-800"
               >
                 <a href="/pricing">View Pricing →</a>
               </Button>
@@ -174,10 +174,10 @@ export function AddAccountModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] border-0 bg-white/95 backdrop-blur-sm max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[500px] border-0 bg-white/95 max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-linear-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+            <div className="h-8 w-8 rounded-lg bg-violet-700 hover:bg-violet-800 flex items-center justify-center">
               <Zap className="h-4 w-4 text-white" />
             </div>
             Add Utility Account
@@ -342,7 +342,7 @@ export function AddAccountModal({
             <Button
               type="submit"
               disabled={loading}
-              className="flex-2 bg-linear-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
+              className="flex-2 bg-violet-700 hover:bg-violet-800 text-white"
             >
               {loading ? (
                 <>

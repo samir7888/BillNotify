@@ -1,440 +1,213 @@
-'use client'
-
 import Link from 'next/link'
 import { Navbar } from '@/components/navbar'
-import { motion } from 'framer-motion'
-import {
-  Zap,
-  Bell,
-  Shield,
-  Clock,
-  CheckCircle,
-  ArrowRight,
-  Mail,
-  ShieldCheck,
-  Smartphone,
-  RefreshCw,
-  MapPin
-} from 'lucide-react'
+import { LogoMark } from '@/components/logo'
+
+const STEPS = [
+  { title: 'Create an account', body: 'Sign up with your email. No credit card needed.' },
+  { title: 'Add your consumer IDs', body: 'Enter the NEA location code, SC No and Consumer ID for each meter.' },
+  { title: 'We check for you', body: 'Your bills are checked every 6 hours on Free and every 2 hours on Pro.' },
+  { title: 'You get an email', body: 'The message arrives when the bill becomes payable in eSewa or Khalti.' },
+]
+
+const FEATURES = [
+  { title: 'Checks on a schedule', body: 'Your bill status is read from the NEA billing page automatically, so you do not have to remember to look.' },
+  { title: 'One email when it matters', body: 'You are told when a bill turns payable, with the amount, instead of a daily message.' },
+  { title: 'Every meter in one place', body: 'Add the home, the shop and your parents\u2019 house, and see which ones need paying.' },
+  { title: 'Built around NEA IDs', body: 'Location codes, SC numbers and consumer IDs are entered the way they appear on your bill.' },
+]
+
+const STORED = [
+  ['Your email address', 'Your password, wallet login or bank details'],
+  ['NEA location code, SC No and Consumer ID', 'Anything needed to pay the bill for you'],
+  ['The last bill status and amount we saw', 'Access to your eSewa or Khalti account'],
+]
 
 export default function LandingPage() {
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div className="min-h-screen bg-paper text-ink selection:bg-signal/40">
       <Navbar />
 
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          padding: '6rem 0 5rem',
-          textAlign: 'center',
-        }}
-      >
-        {/* Glow orbs */}
-        <div
-          className="hero-glow"
-          style={{ top: '-100px', left: '50%', transform: 'translateX(-50%)' }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            width: 400,
-            height: 400,
-            background: 'radial-gradient(circle, rgb(6 182 212 / 0.1) 0%, transparent 70%)',
-            borderRadius: '50%',
-            right: '5%',
-            bottom: 0,
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div className="container-page" style={{ position: 'relative' }}>
-          <div
-            className="animate-fade-in"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              background: 'rgb(79 70 229 / 0.08)',
-              border: '1px solid rgb(79 70 229 / 0.2)',
-              borderRadius: '9999px',
-              padding: '0.35rem 1rem',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              color: 'var(--primary)',
-              marginBottom: '2rem',
-            }}
-          >
-            <span className="pulse-dot" style={{ width: 6, height: 6, background: 'var(--primary)', borderRadius: '50%', display: 'inline-block' }} />
-            Now supporting NEA Electricity Bills
-          </div>
-
-          <h1
-            className="heading-xl animate-slide-up"
-            style={{ marginBottom: '1.5rem', maxWidth: '700px', margin: '0 auto 1.5rem' }}
-          >
-            Never Miss Your{' '}
-            <span className="gradient-text">Nepal Electricity Authority (NEA) Utility Bill</span>{' '}
-            Again
-          </h1>
-
-          <p
-            className="animate-slide-up"
-            style={{
-              fontSize: '1.15rem',
-              color: 'var(--text-muted)',
-              maxWidth: '560px',
-              margin: '0 auto 2.5rem',
-              lineHeight: '1.7',
-              animationDelay: '0.1s',
-            }}
-          >
-            Save your NEA consumer IDs. We automatically check when your bill is payable
-            in eSewa or Khalti and send you an instant email alert — so you pay on time,
-            every time.
-          </p>
-
-          <div
-            className="animate-slide-up"
-            style={{
-              display: 'flex',
-              gap: '1rem',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              animationDelay: '0.2s',
-            }}
-          >
-            <Link href="/pricing" className="btn btn-outline btn-lg" id="hero-cta-pricing">
-              See Pricing
-            </Link>
-
-            <Link href="/dashboard" className="btn btn-primary btn-lg" id="hero-cta-dashboard">
-              Go to Dashboard
-              <ArrowRight size={18} />
-            </Link>
-          </div>
-
-          {/* Social proof */}
-          <div
-            className="animate-fade-in"
-            style={{
-              marginTop: '3rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              fontSize: '0.8rem',
-              color: 'var(--text-muted)',
-              animationDelay: '0.4s',
-            }}
-          >
-            <CheckCircle size={14} color="var(--success)" />
-            No credit card required &nbsp;·&nbsp;
-            <CheckCircle size={14} color="var(--success)" />
-            Free plan available &nbsp;·&nbsp;
-            <CheckCircle size={14} color="var(--success)" />
-            Setup in 2 minutes
-          </div>
-        </div>
-      </section>
-
-      {/* ── How it works ─────────────────────────────────── */}
-      <section style={{ padding: '5rem 0', borderTop: '1px solid var(--border)' }}>
-        <div className="container-page">
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 className="heading-lg" style={{ marginBottom: '0.75rem' }}>
-              How It Works
-            </h2>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '400px', margin: '0 auto' }}>
-              Get started in minutes. We handle the checking — you just pay when ready.
+      <main>
+        {/* Hero */}
+        <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-20">
+          <div className="min-w-0">
+            <h1 className="font-display text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-[3.4rem]">
+              Know the moment your NEA bill is payable.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-violet-700">
+              Save your NEA consumer IDs once. BillNotify checks them for you and sends an email when a bill can be
+              paid in eSewa or Khalti, so you pay on time and skip the late fee.
             </p>
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '1.5rem',
-            }}
-          >
-            {[
-              {
-                step: '01',
-                icon: Shield,
-                title: 'Sign Up',
-                desc: 'Create your free account with your email. No credit card needed.',
-              },
-              {
-                step: '02',
-                icon: Zap,
-                title: 'Add Your Consumer IDs',
-                desc: 'Enter your NEA location code, SC No, and Consumer ID. We verify it instantly.',
-              },
-              {
-                step: '03',
-                icon: Clock,
-                title: 'We Auto-Check',
-                desc: 'Our system checks your bill every 6 hours (Free) or 2 hours (Pro).',
-              },
-              {
-                step: '04',
-                icon: Bell,
-                title: 'Get Notified',
-                desc: 'Receive an email the moment your bill becomes payable in eSewa/Khalti.',
-              },
-            ].map(({ step, icon: Icon, title, desc }) => (
-              <div key={step} className="card card-hover animate-fade-in" style={{ textAlign: 'center' }}>
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 48,
-                    height: 48,
-                    background: 'rgb(79 70 229 / 0.1)',
-                    borderRadius: '12px',
-                    marginBottom: '1rem',
-                    color: 'var(--primary)',
-                  }}
-                >
-                  <Icon size={22} />
-                </div>
-                <div
-                  style={{
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    color: 'var(--text-xmuted)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  Step {step}
-                </div>
-                <h3 className="heading-sm" style={{ marginBottom: '0.5rem' }}>{title}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: '1.6' }}>{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Features ─────────────────────────────────────── */}
-      <section style={{ padding: '6rem 0', background: 'var(--surface)', borderTop: '1px solid var(--border)', position: 'relative', overflow: 'hidden' }}>
-        {/* Decorative background blur */}
-        <div style={{ position: 'absolute', top: '10%', left: '-10%', width: 500, height: 500, background: 'radial-gradient(circle, rgb(79 70 229 / 0.05) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '10%', right: '-10%', width: 500, height: 500, background: 'radial-gradient(circle, rgb(6 182 212 / 0.05) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-
-        <div className="container-page" style={{ position: 'relative' }}>
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                background: 'rgb(79 70 229 / 0.1)',
-                color: 'var(--primary)',
-                padding: '0.35rem 1rem',
-                borderRadius: '9999px',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                marginBottom: '1rem'
-              }}
-            >
-              Powerful Features
-            </motion.div>
-            <motion.h2 
-              className="heading-lg" 
-              style={{ marginBottom: '1rem' }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              Everything You Need
-            </motion.h2>
-            <motion.p
-              style={{ color: 'var(--text-muted)', maxWidth: '500px', margin: '0 auto', fontSize: '1.1rem', lineHeight: '1.6' }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              Designed for reliability and simplicity. We provide all the tools you need to stay on top of your utility bills seamlessly.
-            </motion.p>
-          </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '2rem',
-            }}
-          >
-            {[
-              { icon: <Zap size={22} />, title: 'Real-Time NEA Checks', desc: 'Direct integration with NEA billing system. Results are always fresh and accurate.', color: '#eab308' },
-              { icon: <Mail size={22} />, title: 'Instant Email Alerts', desc: 'Get notified the moment your bill is available. Never lose a late payment penalty.', color: '#3b82f6' },
-              { icon: <ShieldCheck size={22} />, title: 'Bank-Grade Security', desc: 'Your data is encrypted and protected. We only store your consumer IDs, never passwords.', color: '#10b981' },
-              { icon: <Smartphone size={22} />, title: 'Multiple Accounts', desc: 'Manage electricity bills for your home, office, and family all in one place.', color: '#8b5cf6' },
-              { icon: <RefreshCw size={22} />, title: 'Auto-Recurring Checks', desc: 'Set it and forget it. Our cron jobs keep checking so you don\'t have to.', color: '#ec4899' },
-              { icon: <MapPin size={22} />, title: 'Built for Nepal', desc: 'Understands Nepal\'s billing cycles, NEA location codes, and SC numbers natively.', color: '#ef4444' },
-            ].map((feature, i) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '1.25rem',
-                  padding: '2rem',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  boxShadow: '0 10px 30px -10px rgba(0,0,0,0.05)',
-                  cursor: 'default',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
+            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link
+                href="/dashboard"
+                className="rounded-lg bg-violet-700 px-6 py-3 text-base font-semibold text-white hover:bg-violet-800"
               >
-                {/* Glow behind icon */}
-                <div style={{ position: 'absolute', top: 0, right: 0, width: 120, height: 120, background: `radial-gradient(circle, ${feature.color}20 0%, transparent 70%)`, borderRadius: '50%', transform: 'translate(30%, -30%)' }} />
-                
-                <div style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  width: 54, 
-                  height: 54, 
-                  borderRadius: '16px', 
-                  background: `${feature.color}15`, 
-                  color: feature.color, 
-                  marginBottom: '1.5rem',
-                  border: `1px solid ${feature.color}30`
-                }}>
-                  {feature.icon}
-                </div>
-                <h3 className="heading-sm" style={{ marginBottom: '0.75rem', fontSize: '1.15rem' }}>{feature.title}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>{feature.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── SEO / AI Definitions (GEO) ───────────────────── */}
-      <section style={{ padding: '4rem 0', background: 'var(--bg)', borderTop: '1px solid var(--border)' }}>
-        <div className="container-page">
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <h2 className="heading-md w-full text-center" style={{ marginBottom: '1.5rem' }}>Understanding Your NEA Utility Bill</h2>
-            <p className='w-full text-center text-balance' style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.6' }}>
-              BillNotify Nepal is an automated utility notification platform. We help you avoid late fees by tracking your electricity bills.
-            </p>
-            
-            <dl style={{ display: 'grid', gap: '1.5rem', margin: 0 }}>
-              <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '0.75rem', border: '1px solid var(--border)' }}>
-                <dt style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem', color: 'var(--text)' }}>
-                  What is an NEA SC Number?
-                </dt>
-                <dd style={{ color: 'var(--text-muted)', lineHeight: '1.6', margin: 0 }}>
-                  The SC Number (Service Counter Number) is a unique identifier assigned by the Nepal Electricity Authority (NEA) to a specific meter connection. It is used alongside the Consumer ID to check bill status.
-                </dd>
-              </div>
-              
-              <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '0.75rem', border: '1px solid var(--border)' }}>
-                <dt style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem', color: 'var(--text)' }}>
-                  How do I pay my NEA bill online?
-                </dt>
-                <dd style={{ color: 'var(--text-muted)', lineHeight: '1.6', margin: 0 }}>
-                  You can pay your NEA electricity bill online in Nepal using digital wallets like eSewa,
-                   Khalti, or mobile banking apps. BillNotify Nepal alerts you exactly when the
-                    bill is marked as &quot;READY TO PAY&quot; in the NEA system.
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA Banner ───────────────────────────────────── */}
-      <section style={{ padding: '5rem 0', borderTop: '1px solid var(--border)' }}>
-        <div className="container-page" style={{ textAlign: 'center' }}>
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #1e0a4b 0%, #0c1a3a 100%)',
-              borderRadius: '1.5rem',
-              padding: '4rem 2rem',
-              position: 'relative',
-              overflow: 'hidden',
-              border: '1px solid rgb(79 70 229 / 0.3)',
-            }}
-          >
-            <div className="hero-glow" style={{ top: '-50%', left: '50%', transform: 'translateX(-50%)', opacity: 0.3 }} />
-            <div style={{ position: 'relative' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🇳🇵</div>
-              <h2 className="heading-lg" style={{ color: 'white', marginBottom: '1rem' }}>
-                Start Getting Bill Alerts Today
-              </h2>
-              <p style={{ color: '#94a3b8', marginBottom: '2.5rem', maxWidth: '400px', margin: '0 auto 2.5rem' }}>
-                Join thousands of Nepali households who never miss a payment deadline.
-              </p>
-              <Link href="/dashboard" className="btn btn-primary btn-lg" id="cta-bottom-dashboard">
-                Open Dashboard <ArrowRight size={18} />
+                Add your first meter
+              </Link>
+              <Link
+                href="/pricing"
+                className="text-base font-semibold underline decoration-signal decoration-2 underline-offset-4 hover:decoration-4"
+              >
+                See pricing
               </Link>
             </div>
+            <p className="mt-5 text-sm text-violet-500">Free plan available. Set up in about two minutes.</p>
           </div>
-        </div>
-      </section>
 
-      {/* ── Footer ───────────────────────────────────────── */}
-      <footer style={{ borderTop: '1px solid var(--border)', padding: '2rem 0' }}>
-        <div
-          className="container-page flex-col md:flex content-center w-full "
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '1rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div
-              style={{
-                width: 24,
-                height: 24,
-                background: 'linear-gradient(135deg, #4f46e5, #06b6d4)',
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Zap size={13} color="white" />
+          {/* The alert, and the accounts it comes from */}
+          <figure className="min-w-0" aria-label="Example alert email and account list">
+            <div className="rounded-xl border border-violet-200 bg-white shadow-[0_18px_40px_-26px_rgba(31,24,67,0.5)]">
+              <div className="flex items-center gap-3 border-b border-violet-100 px-5 py-4">
+                <LogoMark size={36} />
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold">Your NEA bill is ready to pay</div>
+                  <div className="text-xs text-violet-500">BillNotify &middot; just now</div>
+                </div>
+              </div>
+              <div className="px-5 py-5">
+                <div className="text-sm text-violet-700">Home, Butwal</div>
+                <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="whitespace-nowrap font-display text-3xl font-bold tracking-tight sm:text-4xl">NPR 1,248.50</span>
+                  <span className="rounded-sm bg-signal px-2 py-0.5 text-xs font-bold text-violet-950">Payable now</span>
+                </div>
+                <div className="mt-4 flex gap-2 text-sm font-semibold">
+                  <span className="rounded-md border border-violet-200 px-3 py-1.5">Pay in eSewa</span>
+                  <span className="rounded-md border border-violet-200 px-3 py-1.5">Pay in Khalti</span>
+                </div>
+              </div>
             </div>
-            <span style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text)' }}>
-              BillNotify Nepal
-            </span>
+
+            <div className="mt-3 overflow-hidden rounded-xl border border-violet-200 bg-white text-sm">
+              {[
+                { name: 'Home, Butwal', status: 'Ready to pay', ready: true },
+                { name: 'Shop', status: 'No bill due', ready: false },
+                { name: 'Parents\u2019 house', status: 'No bill due', ready: false },
+              ].map((a) => (
+                <div key={a.name} className="flex items-center justify-between border-b border-violet-100 px-5 py-3 last:border-b-0">
+                  <span className="font-medium">{a.name}</span>
+                  <span className="flex items-center gap-2 text-violet-700">
+                    <span className={`h-2 w-2 rounded-full ${a.ready ? 'bg-signal' : 'bg-violet-200'}`} />
+                    {a.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <figcaption className="mt-3 text-sm text-violet-500">An example of what you receive and what you see.</figcaption>
+          </figure>
+        </section>
+
+        {/* How it works */}
+        <section className="border-y border-violet-100 bg-white">
+          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1fr_1.4fr]">
+            <h2 className="font-display text-3xl font-bold sm:text-4xl lg:sticky lg:top-24 lg:self-start">
+              From saved ID to email, in four steps
+            </h2>
+            <ol className="relative border-l-2 border-violet-100 pl-8">
+              {STEPS.map((s, i) => (
+                <li key={s.title} className="relative pb-9 last:pb-0">
+                  <span
+                    aria-hidden="true"
+                    className={`absolute -left-[2.6rem] top-1 h-4 w-4 rounded-full border-4 border-white ${i === STEPS.length - 1 ? 'bg-signal' : 'bg-violet-600'}`}
+                  />
+                  <h3 className="font-display text-xl font-bold">{s.title}</h3>
+                  <p className="mt-1 max-w-md leading-relaxed text-violet-700">{s.body}</p>
+                </li>
+              ))}
+            </ol>
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: 0 }}>
-            © {new Date().getFullYear()} BillNotify Nepal. Built with ❤️ for Nepal.
+        </section>
+
+        {/* What it does */}
+        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+          <h2 className="font-display max-w-xl text-3xl font-bold sm:text-4xl">What BillNotify does</h2>
+          <dl className="mt-10 grid gap-x-8 gap-y-0 sm:grid-cols-2 lg:grid-cols-4">
+            {FEATURES.map((f) => (
+              <div key={f.title} className="border-t-2 border-violet-800 py-5">
+                <dt className="font-display text-lg font-bold">{f.title}</dt>
+                <dd className="mt-2 leading-relaxed text-violet-700">{f.body}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {/* Privacy */}
+        <section className="border-y border-violet-100 bg-white">
+          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+            <h2 className="font-display max-w-2xl text-3xl font-bold sm:text-4xl">
+              We only keep what we need to check a bill
+            </h2>
+            <div className="mt-10 overflow-x-auto">
+              <table className="w-full border-collapse text-left text-sm sm:text-base">
+                <thead>
+                  <tr className="border-b-2 border-violet-800">
+                    <th scope="col" className="w-1/2 py-3 pr-4 font-semibold">What we store</th>
+                    <th scope="col" className="py-3 font-semibold text-violet-500">What we never ask for</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {STORED.map(([yes, no]) => (
+                    <tr key={yes} className="border-b border-violet-100 align-top">
+                      <td className="py-4 pr-4 font-medium">{yes}</td>
+                      <td className="py-4 text-violet-500">{no}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Plain-language answers (kept for search) */}
+        <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
+          <h2 className="font-display text-3xl font-bold sm:text-4xl">Understanding your NEA bill</h2>
+          <p className="mt-4 leading-relaxed text-violet-700">
+            BillNotify Nepal is an automated utility notification service. It tracks your Nepal Electricity Authority
+            bills and tells you when one is ready to pay, so you can avoid late fees. NEA electricity is supported
+            today; water bills are planned.
           </p>
-          <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Link href="/pricing" style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textDecoration: 'none' }}>
-              Pricing
-            </Link>
-            <Link href="/dashboard" style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textDecoration: 'none' }}>
-              Dashboard
+          <dl className="mt-8 divide-y divide-violet-100 border-y border-violet-100">
+            <div className="py-5">
+              <dt className="font-display text-lg font-bold">What is an NEA SC Number?</dt>
+              <dd className="mt-2 leading-relaxed text-violet-700">
+                The SC Number (Service Counter Number) is a unique identifier assigned by the Nepal Electricity
+                Authority (NEA) to a specific meter connection. It is used alongside the Consumer ID to check bill status.
+              </dd>
+            </div>
+            <div className="py-5">
+              <dt className="font-display text-lg font-bold">How do I pay my NEA bill online?</dt>
+              <dd className="mt-2 leading-relaxed text-violet-700">
+                You can pay your NEA electricity bill online in Nepal using digital wallets like eSewa, Khalti, or
+                mobile banking apps. BillNotify Nepal alerts you when the bill is marked as &quot;READY TO PAY&quot; in
+                the NEA system.
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        {/* Closing */}
+        <section className="bg-violet-800 text-white">
+          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center">
+            <h2 className="font-display max-w-xl text-3xl font-bold sm:text-4xl">Add your first consumer ID today.</h2>
+            <Link
+              href="/dashboard"
+              className="rounded-lg bg-white px-6 py-3 text-base font-semibold text-violet-800 hover:bg-violet-100"
+            >
+              Open the dashboard
             </Link>
           </div>
+        </section>
+      </main>
+
+      <footer className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-violet-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="flex items-center gap-2.5">
+          <LogoMark size={24} />
+          <span>BillNotify Nepal &copy; {new Date().getFullYear()}</span>
         </div>
+        <nav aria-label="Footer" className="flex gap-5">
+          <Link href="/pricing" className="hover:text-ink">Pricing</Link>
+          <Link href="/dashboard" className="hover:text-ink">Dashboard</Link>
+        </nav>
       </footer>
     </div>
   )

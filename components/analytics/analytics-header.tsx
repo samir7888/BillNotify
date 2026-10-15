@@ -14,7 +14,7 @@ export function AnalyticsHeader() {
       <div className="flex items-center gap-3">
         <motion.div
           whileHover={{ scale: 1.05, rotate: 5 }}
-          className="h-12 w-12 bg-linear-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25"
+          className="h-12 w-12 bg-violet-600 rounded-xl flex items-center justify-center"
         >
           <BarChart3 className="h-6 w-6 text-white" />
         </motion.div>
@@ -30,7 +30,7 @@ export function AnalyticsHeader() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2, duration: 0.4 }}
-        className="flex items-center gap-6 mt-4 p-4 bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100"
+        className="flex items-center gap-6 mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100"
       >
         <div className="flex items-center gap-2 text-blue-700">
           <TrendingUp className="h-4 w-4" />
