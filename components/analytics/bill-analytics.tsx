@@ -211,7 +211,7 @@ export function BillAnalytics({ userId }: BillAnalyticsProps) {
         <p className="text-slate-600 mb-6">{error}</p>
         <Button
           onClick={() => window.location.reload()}
-          className="bg-linear-to-r from-red-500 to-red-600"
+          className="bg-red-600"
         >
           Try Again
         </Button>
@@ -235,7 +235,7 @@ export function BillAnalytics({ userId }: BillAnalyticsProps) {
         <p className="text-slate-600 mb-6">
           Add utility accounts to start tracking your bill analytics.
         </p>
-        <Button asChild className="bg-linear-to-r from-blue-500 to-indigo-600">
+        <Button asChild className="bg-violet-600">
           <a href="/dashboard">Add Account</a>
         </Button>
       </motion.div>

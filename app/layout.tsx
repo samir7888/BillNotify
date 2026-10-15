@@ -1,23 +1,21 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Inter, Geist, Plus_Jakarta_Sans } from "next/font/google";
+import { Schibsted_Grotesk, IBM_Plex_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-
-const jakartaSans = Plus_Jakarta_Sans({
+// Headlines: Schibsted Grotesk. Body and numbers: IBM Plex Sans.
+const display = Schibsted_Grotesk({
   subsets: ["latin"],
-  variable: "--font-jakarta",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-display-face",
   display: "swap",
 });
-
-const inter = Inter({
+const plex = IBM_Plex_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -25,6 +23,10 @@ const getAppUrl = () => {
   const url = process.env.NEXT_PUBLIC_APP_URL?.trim();
   if (!url) return "https://billnotify.basnetsameer.com.np";
   return url.replace(/\/+$/, "");
+};
+
+export const viewport: Viewport = {
+  themeColor: "#413284",
 };
 
 export const metadata: Metadata = {
@@ -87,7 +89,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("font-sans", geist.variable)}
+      className={cn("font-sans", plex.variable, display.variable)}
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -96,7 +98,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${jakartaSans.variable} ${inter.variable} font-inter`}>
+      <body className="font-sans antialiased">
         <ClerkProvider>
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster

@@ -114,57 +114,31 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Enhanced Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col space-y-3 sm:space-y-4"
-      >
-        <div className="space-y-1 sm:space-y-2">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
-            Dashboard
-          </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed">
-            Manage your utility accounts and bill alerts with ease.
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">Dashboard</h1>
+          <p className="mt-1 text-sm text-violet-700 sm:text-base">
+            Your {plan === "PRO" ? "Pro" : "Free"} plan &middot; every meter you track, and which ones need paying.
           </p>
         </div>
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Badge
-            variant={plan === "PRO" ? "default" : "secondary"}
-            className={`px-3 sm:px-4 py-1.5 sm:py-2 font-semibold text-xs sm:text-sm self-start ${
-              plan === "PRO"
-                ? "bg-linear-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25"
-                : "bg-slate-100 text-slate-700 border-slate-200"
-            }`}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchAccounts(true)}
+            disabled={refreshing}
+            className="border-violet-200 bg-white text-sm"
           >
-            {plan === "PRO" ? "⚡ Pro Plan" : "🆓 Free Plan"}
-          </Badge>
-
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => fetchAccounts(true)}
-              disabled={refreshing}
-              className="bg-white/80 backdrop-blur-sm border-slate-200 hover:bg-white shadow-sm text-sm"
-            >
-              <RefreshCw
-                className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-              />
-              {refreshing ? "Refreshing…" : "Refresh"}
-            </Button>
-
-            <Button
-              onClick={() => setShowModal(true)}
-              className="bg-linear-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg shadow-violet-500/25 font-semibold text-sm"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Account
-            </Button>
-          </div>
+            <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+            {refreshing ? "Refreshing…" : "Refresh"}
+          </Button>
+          <Button onClick={() => setShowModal(true)} className="bg-violet-700 text-sm font-semibold text-white hover:bg-violet-800">
+            <Plus className="mr-2 h-4 w-4" />
+            Add account
+          </Button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Enhanced Stats Cards */}
       {loading ? (
@@ -186,7 +160,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Accounts Table - Takes up 3 columns on lg screens, full width on smaller */}
         <div className="lg:col-span-3 order-2 lg:order-1">
-          <Card className="border-slate-200 shadow-sm bg-white/80 backdrop-blur-sm">
+          <Card className="border-slate-200 shadow-sm bg-white/80">
             <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="space-y-1 sm:space-y-2">
@@ -209,7 +183,7 @@ export default function DashboardPage() {
                 </div>
 
                 {billsReady > 0 && (
-                  <Badge className="bg-linear-to-r from-emerald-500 to-green-600 text-white px-3 py-1 text-xs sm:text-sm font-semibold self-start">
+                  <Badge className="bg-signal text-violet-950 px-3 py-1 text-xs sm:text-sm font-semibold self-start">
                     {billsReady} bill{billsReady !== 1 ? "s" : ""} ready
                   </Badge>
                 )}
@@ -238,7 +212,7 @@ export default function DashboardPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="border-slate-200 shadow-sm bg-white/80 backdrop-blur-sm">
+              <Card className="border-slate-200 shadow-sm bg-white/80">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-semibold flex items-center gap-2 text-slate-900">
                     <Activity className="h-5 w-5 text-blue-500" />
@@ -299,7 +273,7 @@ export default function DashboardPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <Card className="border-0 bg-linear-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25">
+              <Card className="border-0 bg-violet-700 hover:bg-violet-800 text-white">
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
